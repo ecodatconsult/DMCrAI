@@ -10,7 +10,7 @@ create_md_folder_structure <- function(screened_images_files, simple.solution = 
       for(new_dir in new_dirs) dir.create(new_dir)
     }
   }else{
-    folder_structure <- strsplit(screened_images_files, "/")
+    folder_structure <- strsplit(screened_images_files, "\\\\")
     folder_depth <- max(unlist(lapply(folder_structure, length)))
     folder_structure <- lapply(folder_structure, function(x){
       x[length(x)] <- NA

@@ -9,7 +9,7 @@ create_md_bat <- function(pics_dir, md_out = pics_dir, py_scripts_loc = NULL, md
          'python detection\\run_detector_batch.py "', md_model_loc, '" "', pics_dir, '" "', pics_dir,'\\md_out.json"', " --recursive")
 
   if(!force.overwrite & file.exists(paste0(pics_dir,'\\md_out.json'))) {
-    cmd_message <- paste0(cmd_message, " --resume_from_checkpoint ", paste0(pics_dir,'\\md_out.json'))
+    cmd_message <- paste0(cmd_message, ' --resume_from_checkpoint "', paste0(pics_dir,'\\md_out.json"'))
   }
 
   if(run_info){
