@@ -1,5 +1,15 @@
+#' Diese Funktion ermittelt das Hauptverzeichnis mehrerer Pfade und legt dort eine neue Unterordner an. In diesen Ordner wird die Ordnerstruktur des Hauptverzeichnis mit allen Unterordnern (ohne den neuen Unterordner) kopiert.
+#'
+#' @param md_img_info data.frame, Datentabelle mit information über Speicherort des Bildes sowie der Geometrie der Bounding Box
+#' @param img.in.file character, aktueller Speicherort des Bildes (Standardwert ist die Angabe in md_img_info)
+#' @param img.out.file character, Ausgabepfad des prozessierten Bildes (Standardwert ist die Angabe in md_img_info)
+#' @param radius numeric, Radius des Rauschfilters
+#' @param sigma numeric, Stärke des Rauschfilters
+#'
+#' @returns list, enthälte Informationen für die Wiedergabe in R-Shiny (Pfad, Größe)
 #' @export
 #'
+
 bbox_md_imgs <- function(md_img_info, out.file = tempfile("bbox_img", fileext = ".png"), scale = "x480", safe.mode = TRUE, skip = FALSE){
 
   imgs <- magick::image_read(md_img_info$file[1]) %>%

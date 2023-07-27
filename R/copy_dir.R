@@ -1,3 +1,6 @@
+#' Funktion um Ordnerstruktur in ein neues Verzeichnis zu kopieren
+#' @param from character, Pfad des Originalverzeichnisses
+#' @param to character, Pfad des Zielverzeichnisses
 #' @export
 #'
 # copy folder structure

@@ -1,15 +1,20 @@
 Package: DMCrAI
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
+Title: Run the Camera Trap AI "Megadetector" and manage its output.
+Version: 0.3.0
+Author: person("Alexander", "Milles", , "ecodat@posteo.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7603-1899"))
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Run the Camera Trap AI "Megadetector" and manage its output. This package is intended to be used along with a ShinyApp.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Imports: 
+    dplyr,
     filesstrings (>= 3.2.4),
-    magrittr
+    here,
+    magick,
+    magrittr,
+    rjson,
+    stringr

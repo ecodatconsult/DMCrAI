@@ -1,3 +1,14 @@
+#' Erstell ein batch-Datei, um den Megadetector auf dem Zielsystem laufen zu lassen
+#'
+#' @param pics_dir character, Verzeichnis in dem der Megadetector rekursiv Bilder detektieren und klassifizieren soll
+#' @param md_out character, Verzeichnis in dem die "md_out.json" gespeichert werden soll. Per Default entspricht das dem pics_dir Verzeichnis
+#' @param py_scripts_loc character, Verzeichnis in dem die für Megadetector Python-Skripte hinterlegt sind (s. DMCrAI::setup_md())
+#' @param md_model_loc, character, Verzeichnis in dem Megadetector-Modell liegt (s. DMCrAI::setup_md())
+#' @param force.overwrite boolean, gibt an, ob die frühere md_out.json überschrieben werden soll. Falls nicht, und sofern eine md_out.json in md_out liegt, werde frühere Klassifikationen übernommen und nur neue Bilder klassifiziert
+#' @param bat_loc character, Pfad unter dem die Batch-Datei abgelegt werden soll (bspw. here::here("md.bat"))
+#' @param run_info boolean, gibt an, ob Checkpoints erstellt und der Konsolenoutput während der Megadetector-Prozessierung gespeichert werden soll (TEST VERSION!)
+#' @param checkpoint_freq numeric, gibt die Häufigkeit an mit der Checkpoint erstellt werden
+#'
 #' @export
 
 create_md_bat <- function(pics_dir, md_out = pics_dir, py_scripts_loc = NULL, md_model_loc = NULL, force.overwrite = FALSE, bat_loc = NULL, run_info = FALSE, checkpoint_freq = 500){
@@ -6,10 +17,10 @@ create_md_bat <- function(pics_dir, md_out = pics_dir, py_scripts_loc = NULL, md
   paste0('cd "', py_scripts_loc,'\\cameratraps"\n',
          "call activate cameratraps-detector\n",
          'set PYTHONPATH=%PYTHONPATH%;', py_scripts_loc, '\\CameraTraps;', py_scripts_loc, '\\ai4eutils;', py_scripts_loc, '\\yolov5\n',
-         'python detection\\run_detector_batch.py "', md_model_loc, '" "', pics_dir, '" "', pics_dir,'\\md_out.json"', " --recursive")
+         'python detection\\run_detector_batch.py "', md_model_loc, '" "', pics_dir, '" "', md_out,'\\md_out.json"', " --recursive")
 
-  if(!force.overwrite & file.exists(paste0(pics_dir,'\\md_out.json'))) {
-    cmd_message <- paste0(cmd_message, ' --resume_from_checkpoint "', paste0(pics_dir,'\\md_out.json"'))
+  if(!force.overwrite & file.exists(paste0(md_out,'\\md_out.json'))) {
+    cmd_message <- paste0(cmd_message, ' --resume_from_checkpoint "', paste0(md_out,'\\md_out.json"'))
   }
 
   if(run_info){

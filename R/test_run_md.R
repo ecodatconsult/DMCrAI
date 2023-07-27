@@ -1,3 +1,5 @@
+# Testlauf zur Überprüfung der Funktionalität von Megadetector
+
 #' @export
 
 test_run_md <- function(){

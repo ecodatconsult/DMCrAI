@@ -1,3 +1,8 @@
+#' Extrahiere Infos aus geladener JSON
+#'
+#' @param img data.frame, "Images" Attribute eines einzelnen Bilders aus der mittels Megadetector erzeugten JSON-Datei (z.B. "md_out.json") mit Informationen zur Klassifikation der einzelnen Bounding Boxen sowie deren Geometrie
+#'
+#' @returns data.frame
 #' @export
 #'
 extract_md_info <- function(img){

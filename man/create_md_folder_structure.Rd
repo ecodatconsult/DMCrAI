@@ -4,10 +4,14 @@
 \alias{create_md_folder_structure}
 \title{Diese Funktion ermittelt das Hauptverzeichnis mehrerer Pfade und legt dort eine neue Unterordner an. In diesen Ordner wird die Ordnerstruktur des Hauptverzeichnis mit allen Unterordnern (ohne den neuen Unterordner) kopiert.}
 \usage{
-create_md_folder_structure(files, md_dirs = "md_empty")
+create_md_folder_structure(files, md_dirs = "md_empty", slash = "\\\\")
 }
 \arguments{
-\item{files}{Pfade}
+\item{files}{character vector, Pfade zu den einzelnen Bildern}
+
+\item{md_dirs}{character vector, Gibt an für welche Megadetector-Kategorien (md_empty, md_person, md_animal, md_vehicle) separate Ordner erstellt werden sollen. Achtung - Die Shiny-App DMCrAI unterstützt nur md_dirs = "md_empty"}
+
+\item{slash}{character, gibt den zu nutzenden Pfad-Seperator an.}
 }
 \description{
 Diese Funktion ermittelt das Hauptverzeichnis mehrerer Pfade und legt dort eine neue Unterordner an. In diesen Ordner wird die Ordnerstruktur des Hauptverzeichnis mit allen Unterordnern (ohne den neuen Unterordner) kopiert.

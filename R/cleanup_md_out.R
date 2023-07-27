@@ -1,5 +1,6 @@
+#' Entfernt nicht mehr existente Bilder aus mit Megadetector erzeugter JSON
 #'
-#' @param file Pfade
+#' @param file Pfad zur mit Megadetector erzeugten JSON-Datei
 #'
 #'
 #' @export
