@@ -5,8 +5,10 @@
 #' @returns data.frame
 #' @export
 #'
+#'
+
 extract_md_info <- function(img){
-  if(img$max_detection_conf > 0){
+  if(length(img$detections) >0){
     category <- unlist(lapply(img$detections, function(y) y$category))
     conf <- unlist(lapply(img$detections, function(y) y$conf))
 
