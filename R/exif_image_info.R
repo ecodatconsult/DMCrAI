@@ -20,7 +20,7 @@ exif_image_info <- function(md_dir = here::here(), info_out = tempfile("out", tm
 
   cmd <- paste0('"',system.file("exiftool.exe", package = "DMCrAI"),'"', " -T -r ", tags, '"', md_dir,'"' ," > ", '"', normalizePath(info_out, mustWork = FALSE), '"')
 
-  temp_bat <- tempfile(fileext = ".bat")
+  temp_bat <- tempfile("run_exif", tmpdir = here::here(), fileext = ".bat")
   write(cmd, temp_bat)
   shell(temp_bat)
   file.remove(temp_bat)
@@ -31,7 +31,7 @@ exif_image_info <- function(md_dir = here::here(), info_out = tempfile("out", tm
 
   names(img_info) <- substr(unlist(strsplit(tags, " ")), 2,35)
 
-  img_info$createdate <- lubridate::as_datetime(img_info$createdate)
+  img_info$datetimeoriginal <- lubridate::as_datetime(img_info$datetimeoriginal)
   img_info$deployment <- basename(dirname(img_info$filepath))
 
   file.remove(info_out)
