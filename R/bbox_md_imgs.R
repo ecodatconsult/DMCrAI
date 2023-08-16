@@ -33,8 +33,8 @@ bbox_md_imgs <- function(md_img_info, out.file = tempfile("bbox_img", fileext = 
         bbox_image <- bbox_image %>% magick::image_blur(radius = 30, sigma = 15)
       }
 
-      bbox_col <- c("coral", "navyblue", "wheat")[md_img_info$category[bbox]]
-      text_col <- c("black", "white", "black")[md_img_info$category[bbox]]
+      bbox_col <- c("coral", "navyblue", "wheat", "turquoise1")[md_img_info$category[bbox]]
+      text_col <- c("black", "white", "black", "black")[md_img_info$category[bbox]]
 
       bbox_image_border <- magick::image_border(bbox_image, color = bbox_col, geometry = "4x4") %>%
         magick::image_annotate(text = md_img_info$conf[bbox], size = 20, color = text_col, boxcolor = bbox_col)

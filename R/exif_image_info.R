@@ -1,4 +1,4 @@
-#' Extrahiere Pfad und Erstellungsdatum der Bilder und gib einen data.frame aus
+#' Extrahiere Pfad und Erstellungsdatum der Bilder in einem Verzeichnis (rekursiv) mittels exiftool und gib einen data.frame aus
 #'
 #'
 #' @param md_dir character, Verzeichnis in dem rekursiv Bilder gesucht werden

@@ -2,10 +2,10 @@
 % Please edit documentation in R/exif_image_info.R
 \name{exif_image_info}
 \alias{exif_image_info}
-\title{Extrahiere Pfad und Erstellungsdatum der Bilder und gib einen data.frame aus}
+\title{Extrahiere Pfad und Erstellungsdatum der Bilder in einem Verzeichnis (rekursiv) mittels exiftool und gib einen data.frame aus}
 \usage{
 exif_image_info(
-  md_dir,
+  md_dir = here::here(),
   info_out = tempfile("out", tmpdir = here::here(), fileext = ".txt"),
   optional_tags = NULL
 )
@@ -18,7 +18,7 @@ exif_image_info(
 \item{optional_tags}{character, Weitere exiftool-Tags die in der Tabelle eingetragen werden sollen (z.B: "-Model" um das Kameramodell zu extrahieren)}
 }
 \description{
-Prinzipiell lassen sich bei Bedarf mit dieser
+Extrahiere Pfad und Erstellungsdatum der Bilder in einem Verzeichnis (rekursiv) mittels exiftool und gib einen data.frame aus
 }
 \examples{
 #Checks all images in the current directory recursively
