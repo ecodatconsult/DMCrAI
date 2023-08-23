@@ -7,7 +7,6 @@
 #'
 #' @export
 
-
 download_md_data <- function(directories, include.classified = FALSE){
   con <- DMCr2::dbConnection()
 
@@ -24,13 +23,26 @@ download_md_data <- function(directories, include.classified = FALSE){
     stop("megadetector.classifications table does not exist but is required!")
   }
 
-  if(!include.classified){
+  if(include.classified){
+    if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "manually_tagged"))){
+      megadetector_manually_tagged <- RPostgreSQL::dbGetQuery(con, glue::glue_sql("SELECT * FROM megadetector.manually_tagged where directory_id in ({directories*})", directories = megadetector_directories$directory_id, .con = con))
+
+      if(nrow(megadetector_manually_tagged) > 0){
+        megadetector_classifications <-
+          megadetector_classifications %>%
+          dplyr::filter(!obs_id %in% megadetector_manually_tagged$obs_id) %>%
+          dplyr::bind_rows(megadetector_manually_tagged) %>%
+          dplyr::arrange(event_id, obs_id) %>%
+          mutate(file = basename(file))
+      }
+    }
+  }else{
     if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "manually_tagged"))){
       megadetector_manually_tagged <- RPostgreSQL::dbGetQuery(con, glue::glue_sql("SELECT obs_id FROM megadetector.manually_tagged where directory_id in ({directories*})", directories = megadetector_directories$directory_id, .con = con))
 
       megadetector_classifications <-
         megadetector_classifications %>%
-        filter(!obs_id %in% megadetector_manually_tagged$obs_id)
+        dplyr::filter(!obs_id %in% megadetector_manually_tagged$obs_id)
     }
   }
 

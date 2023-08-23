@@ -21,7 +21,7 @@ upload_md_data <- function(md_out_events){
   if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "directories"))){
     megadetector_directories <- RPostgreSQL::dbGetQuery(con, "SELECT * FROM megadetector.directories", .con = con)
   }else{
-    megadetector_directories <- dplyr::tibble(directory_id = NULL, directory = NULL)
+    megadetector_directories <- dplyr::tibble(directory_id = NULL, directory = NULL, project = NULL, location = NULL, deployment = NULL)
   }
 
   # filter new directories
@@ -29,7 +29,8 @@ upload_md_data <- function(md_out_events){
   md_out_events %>%
     dplyr::mutate(directory = dirname(file)) %>%
     dplyr::select(directory) %>%
-    dplyr::filter(!duplicated(directory) & !directory %in% megadetector_directories$directory)
+    dplyr::filter(!duplicated(directory) & !directory %in% megadetector_directories$directory) %>%
+    dplyr::mutate(project = as.character(NA), location = as.character(NA), deployment = as.character(NA))
 
   if(nrow(new_directories) > 0){
     new_directories <-
@@ -53,7 +54,8 @@ upload_md_data <- function(md_out_events){
       dplyr::bind_rows(
       new_directories,
       megadetector_directories
-    )
+    ) %>%
+      dplyr::select(directory_id, directory)
     ) %>%
     dplyr::mutate(file = basename(file)) %>%
     dplyr::relocate(directory_id, .before = file) %>%
