@@ -10,9 +10,9 @@
 #'
 dbConnectionWorking <- function(psw){
 
-  if(file.exists(system.file("db_login.csv", package = "DMCr2"))){
+  if(file.exists(system.file("db_login.csv", package = "DMCrAI"))){
       tryCatch(
-        con_check <- with(read.csv(system.file("db_login.csv", package = "DMCr2")),{
+        con_check <- with(read.csv(system.file("db_login.csv", package = "DMCrAI")),{
           DBI::dbConnect(RPostgreSQL::PostgreSQL(),
                          user = user,
                          password = psw,

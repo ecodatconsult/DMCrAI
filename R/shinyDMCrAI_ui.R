@@ -148,10 +148,8 @@ shinyDMCrAI_ui <- function(){
                                                     "process_empty_img_mode",
                                                     "Option für den Umgang mit Leerbildern wählen",
                                                     choices = c("Keine Bilder löschen, Upload in Datenbank" = "upload",
-                                                                "Leerbilder löschen" = "delete",
                                                                 "Leerbilder teilweise löschen" = "delete_some",
-                                                                "Leerbilder u Personenbilder umbenennen" = "rename",
-                                                                "Leerbilder in Unterordner verschieben" = "move"),
+                                                                "Leerbilder u Personenbilder umbenennen" = "rename"),
                                                     selected = "rename"
                                                   ),
                                                   shiny::numericInput(

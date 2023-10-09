@@ -13,7 +13,7 @@ upload_md_data <- function(md_out_events){
   if(!all(req_names %in% names(md_out_events))) stop(paste0("missing names in md_out_events (", paste(req_names[!req_names %in% names(md_out_events)], collapse = ", "),  ")!"))
 
 
-  con <- DMCr2::dbConnection()
+  con <- dbConnection()
 
   ### upload directories where images are located to prevent overly long paths to images
 

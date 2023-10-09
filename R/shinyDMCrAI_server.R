@@ -44,6 +44,8 @@ shinyDMCrAI_server <- function(input, output, session) {
     # reactive, recursively screen for image files
     img_files <- shiny::reactive({
       #TODO: this may cause issues with maany files..! use some indexing?
+      shiny::showNotification(paste0(lubridate::now(), ": listing image files.."))
+
       list.files(
         md_dir(),
         pattern = ".jpg$|.jpeg$|.png$",
@@ -109,15 +111,7 @@ shinyDMCrAI_server <- function(input, output, session) {
       }
     })
 
-    exif_image_info_df <- shiny::reactive({
-      exif_image_info_df <-
-        exif_image_info(
-          md_dir = normalizePath(paste0(dirname(md_dir()), "/", basename(md_dir()))) #remove trailing // of md_dir()
-        ) %>%
-        dplyr::mutate(filepath = normalizePath(filepath))
-      return(exif_image_info_df)
-    })
-
+    exif_info <- shiny::reactiveValues(df = NULL)
 
     # generate batch script and run megadetector
     shiny::observe({
@@ -126,10 +120,16 @@ shinyDMCrAI_server <- function(input, output, session) {
 
 
       if(is.null(start_time())) start_time(Sys.time())
-      shiny::updateActionButton(session = session, inputId = "runMD", label = "Indiziere Bilder", icon = icon("file-image"))
-      print(exif_image_info_df())
+      shiny::showNotification(paste0(lubridate::now(), ": Starte Megadetector"), duration = NULL)
       shiny::updateActionButton(session = session, inputId = "runMD", label = "Megadetector läuft", icon = icon("mug-hot"))
       shell.exec("shiny_md.bat")
+      shiny::showNotification(paste0(lubridate::now(), ": Starte exiftool zum Auslesen der Zeitstempel.."), duration = NULL)
+      exif_info$df <- exif_image_info(
+        md_dir = normalizePath(paste0(dirname(md_dir()), "/", basename(md_dir()))) #remove trailing // of md_dir()
+      ) %>%
+        dplyr::mutate(filepath = normalizePath(filepath))
+      shiny::showNotification(paste0(lubridate::now(), ": Alle Zeitstempel ausgelesen!"), duration = NULL)
+
     }) %>%
       shiny::bindEvent(input$runMD)
 
@@ -152,6 +152,8 @@ shinyDMCrAI_server <- function(input, output, session) {
         print(file.info(paste0(md_dir(), .Platform$file.sep, "md_out.json"))$mtime)
         new_md_out <- file.info(paste0(md_dir(), .Platform$file.sep, "md_out.json"))$mtime > start_time() | sum_unclassified_images() == 0
         if(new_md_out){
+
+          shiny::showNotification(paste0(lubridate::now(), ": Klassifikation abgeschossen!"), duration = NULL)
           shiny::updateActionButton(session = session, inputId = "runMD", label = "Klassifikation abgeschlossen!", icon = icon("face-grin-stars"))
           refresh_nr(refresh_nr() + 1)
           start_time(NULL)
@@ -166,6 +168,7 @@ shinyDMCrAI_server <- function(input, output, session) {
     #####   PANEL 2 - INSPECT MD_OUT #####
     ######################################
 
+    # PROCESS MD_OUT.JSON
     md_out <- shiny::reactive({
       if(md_out_exists()){
         md_out <- lapply(load_md_out_imgs(paste0(md_dir(), .Platform$file.sep, "md_out.json")),
@@ -180,14 +183,9 @@ shinyDMCrAI_server <- function(input, output, session) {
       return(md_out)
     })
 
-    md_out_bbox <- shiny::reactive({
-      md_out() %>%
-        dplyr::filter(conf >= input$bbox_threshold)
-    })
-
     md_out_events_df <- shiny::reactive({
       md_out_events_df <-  md_out() %>%
-        dplyr::left_join(exif_image_info_df(), by = c("file" = "filepath")) %>%
+        dplyr::left_join(exif_info$df, by = c("file" = "filepath")) %>%
         dplyr::group_by(deployment) %>%
         dplyr::mutate(event = cumsum(zoo::rollapply(as.numeric(datetimeoriginal), 2, function(x) (x[2]-x[1])/60 > input$event_definition_minutes, fill = FALSE, align = "right"))) %>%
         dplyr::mutate(event_id = paste0(deployment, "_", event)) %>%
@@ -197,8 +195,10 @@ shinyDMCrAI_server <- function(input, output, session) {
     })
 
     #input <- list(event_definition_minutes = 5)
+
+    ### RENDERING DATA TABLE OF IMAGES
+    # table for rendering
     md_out_table_df <- shiny::reactive({
-      md_out_table_df <-
         md_out_events_df() %>%
         dplyr::select(file, conf, category_word, event_id) %>%
         dplyr::group_by(file) %>%
@@ -222,6 +222,8 @@ shinyDMCrAI_server <- function(input, output, session) {
       return(DT_out)
     })
 
+
+    ### RENDERING IMAGES BY HOVERING OVER DATA TABLE
     hover_path <- shiny::reactiveVal(0)
 
     shiny::observe({
@@ -232,8 +234,12 @@ shinyDMCrAI_server <- function(input, output, session) {
       shiny::bindEvent(input$clickIndexJS) %>%
       shiny::debounce(100)
 
-    output$img_hover <- shiny::renderImage({
+    md_out_bbox <- shiny::reactive({
+      md_out() %>%
+        dplyr::filter(conf >= input$bbox_threshold)
+    })
 
+    output$img_hover <- shiny::renderImage({
       if(hover_path() == 0){
         tmp_info <- tempfile(fileext = "jpg")
         file.copy("www/info.jpg", tmp_info)
@@ -255,22 +261,9 @@ shinyDMCrAI_server <- function(input, output, session) {
 
     }, deleteFile = TRUE)
 
+    # figure to inform about bbox classes and their conf-level distribution
     output$md_out_figure <- ggiraph::renderGirafe({
-      (md_out() %>%
-         dplyr::filter(category > 0) %>%
-         dplyr::group_by(category_word) %>%
-         dplyr::mutate(count = dplyr::n()) %>%
-         dplyr::ungroup() %>%
-         ggplot2::ggplot(ggplot2::aes(x = conf, color = category_word, fill = category_word))+
-         ggplot2::scale_color_manual("Category", values = c("coral", "navyblue", "wheat"))+
-         ggplot2::scale_fill_manual("Category", values = c("coral", "navyblue", "wheat"))+
-         ggplot2::theme_minimal()+
-         ggplot2::labs(x = "MD-Confidence", y = "Anzahl")+
-         ggplot2::scale_y_log10()+
-         ggiraph::geom_histogram_interactive(ggplot2::aes(tooltip = paste0(category_word, " (n = ", count, ")"), data_id = category_word))) %>%
-        ggiraph::girafe(code = NULL) %>%
-        ggiraph::girafe_options(ggiraph::opts_hover(css = "opacity:1;"),
-                                ggiraph::opts_hover_inv(css = "opacity:0.2;"))
+      shinyDMCrAI_figMDout(md_out())
     })
 
 
@@ -308,18 +301,10 @@ shinyDMCrAI_server <- function(input, output, session) {
 
     })
 
+    # Figure to inform about the proportion of event classes
     output$md_threshold_figure <- ggiraph::renderGirafe({
-      (md_out_threshold()  %>%
-         dplyr::filter(!duplicated(file)) %>%
-         dplyr::group_by(dir_category) %>%
-         dplyr::summarise(count = 100 * dplyr::n()/sum(classified_images())) %>%
-         ggplot2::ggplot(ggplot2::aes(x = dir_category, y = count, fill = dir_category))+
-         ggiraph::geom_col_interactive(ggplot2::aes(tooltip = paste0(round(count), "% aller Bilder"), data_id = dir_category))+
-         ggplot2::scale_fill_manual(values = c("coral", "gray", "navyblue", "wheat", "deepskyblue4"))+
-         ggplot2::theme_classic()+
-         ggplot2::theme(legend.position = "none")+
-         ggplot2::labs(x = "Kategorie", y = "Anteil nach Grenzwertfestlegung")) %>%
-        ggiraph::girafe(code = NULL)
+      shinyDMCrAI_figThreshold(md_out_threshold = md_out_threshold(),
+                               classified = classified_images())
     })
 
     ### move images to respective new files while maintaining the folder structure
@@ -362,7 +347,7 @@ shinyDMCrAI_server <- function(input, output, session) {
           dplyr::ungroup() %>%
           dplyr::filter(event_category != "md_empty")
 
-        readr::write_csv(md_out_upload, "md_out_upload.csv")
+        #readr::write_csv(md_out_upload, "md_out_upload.csv")
 
         #DMCrAI
         upload_md_data(md_out_upload)
@@ -396,94 +381,93 @@ shinyDMCrAI_server <- function(input, output, session) {
           write(rjson::toJSON(rjs),  paste0(md_dir(), "\\md_out.json"))
 
         }else{
-          #TODO add option to resize empty images?!
-          if(input$process_empty_img_mode == "move"){
-            print("Moving files")
 
-            screened_images <-
-              md_out_threshold() %>%
-              dplyr::mutate(new_file_alternativ = ifelse(dir_category == "md_empty" & basename(dirname(file)) != "md_empty",
-                                                         paste(dirname(file), "md_empty", basename(file), sep = .Platform$file.sep),
-                                                         file))
+        if(input$process_empty_img_mode == "move"){
+          print("Moving files")
 
-            screened_images_no_dupl <- screened_images %>%
-              dplyr::filter(!duplicated(file))
+          screened_images <-
+            md_out_threshold() %>%
+            dplyr::mutate(new_file_alternativ = ifelse(dir_category == "md_empty" & basename(dirname(file)) != "md_empty",
+                                                       paste(dirname(file), "md_empty", basename(file), sep = .Platform$file.sep),
+                                                       file))
 
-            if(any(screened_images_no_dupl$new_file_alternativ != screened_images_no_dupl$file)){
-              #DMCrAI function
-              moved_all_files <- move_md_img2folder(screened_images = screened_images_no_dupl %>%
-                                                              dplyr::filter(file != new_file_alternativ),
-                                                            reverse = FALSE,
-                                                            original_file_col = "file",
-                                                            md_file_col = "new_file_alternativ")
-            }
-          }else{
-            if(input$process_empty_img_mode == "rename"){
+          screened_images_no_dupl <- screened_images %>%
+            dplyr::filter(!duplicated(file))
 
-              screened_images <-
-                md_out_threshold() %>%
-                dplyr::mutate(new_file_alternativ = ifelse(dir_category %in% c("md_person", "md_vehicle", "md_mixed", "md_empty") & !stringr::str_detect(basename(file), pattern = "^z_md_person|^z_md_vehicle|^z_md_mixed|^z_md_empty"),
-                                                           stringi::stri_replace_last_regex(file, basename(file), paste0("z_", dir_category, "_", basename(file))),
-                                                           file))
+          if(any(screened_images_no_dupl$new_file_alternativ != screened_images_no_dupl$file)){
+            #DMCrAI function
+            moved_all_files <- move_md_img2folder(screened_images = screened_images_no_dupl %>%
+                                                    dplyr::filter(file != new_file_alternativ),
+                                                  reverse = FALSE,
+                                                  original_file_col = "file",
+                                                  md_file_col = "new_file_alternativ")
+          }
+        }
 
+        if(input$process_empty_img_mode == "rename"){
 
-              screened_images_no_dupl <- screened_images %>%
-                dplyr::filter(!duplicated(file))
-
-              file.rename(screened_images_no_dupl$file, screened_images_no_dupl$new_file_alternativ)
-            }else{
+          screened_images <-
+            md_out_threshold() %>%
+            dplyr::mutate(new_file_alternativ = ifelse(dir_category %in% c("md_person", "md_vehicle", "md_mixed", "md_empty") & !stringr::str_detect(basename(file), pattern = "^z_md_person|^z_md_vehicle|^z_md_mixed|^z_md_empty"),
+                                                       stringi::stri_replace_last_regex(file, basename(file), paste0("z_", dir_category, "_", basename(file))),
+                                                       file))
 
 
+          screened_images_no_dupl <- screened_images %>%
+            dplyr::filter(!duplicated(file))
+
+          file.rename(screened_images_no_dupl$file, screened_images_no_dupl$new_file_alternativ)
+        }
+
+        if(input$process_empty_img_mode == "delete_some"){
+          # remove empty images not part of an event
+          files2remove_a <- md_out_threshold() %>%
+            dplyr::filter(dir_category == "md_empty") %>%
+            dplyr::select(file) %>%
+            purrr::as_vector()
+
+          # only keep images with the most bounding boxes in md_person, md_mixed and/or md_vehicle
+          files2remove_b <- md_out_threshold() %>%
+            dplyr::filter(!dir_category %in% c("md_animal", "md_empty")) %>%
+            dplyr::group_by(file) %>%
+            dplyr::summarise(n_bbox = sum(category_word != "md_empty"), event_id = event_id[1]) %>%
+            dplyr::group_by(event_id) %>%
+            dplyr::filter(n_bbox < max(n_bbox))%>%
+            dplyr::ungroup() %>%
+            dplyr::select(file) %>%
+            purrr::as_vector()
 
 
-              # remove empty images not part of an event
-              files2remove_a <- md_out_threshold() %>%
-                dplyr::filter(dir_category == "md_empty") %>%
-                dplyr::select(file) %>%
-                purrr::as_vector()
+          files2remove <- unique(c(files2remove_a, files2remove_b))
+          # do not remove files that have been moved to md_empty folder and/or have been renamed to md_empty..
+          files2remove <- files2remove[basename(dirname(files2remove)) != "md_empty"]
+          files2remove <- files2remove[!stringr::str_detect(basename(files2remove), pattern = "^md_empty")]
 
-              # only keep images with the most bounding boxes in md_person, md_mixed and/or md_vehicle
-              files2remove_b <- md_out_threshold() %>%
-                dplyr::filter(!dir_category %in% c("md_animal", "md_empty")) %>%
-                dplyr::group_by(file) %>%
-                dplyr::summarise(n_bbox = sum(category_word != "md_empty"), event_id = event_id[1]) %>%
-                dplyr::group_by(event_id) %>%
-                dplyr::filter(n_bbox < max(n_bbox))%>%
-                dplyr::ungroup() %>%
-                dplyr::select(file) %>%
-                purrr::as_vector()
+          file.remove(files2remove)
+
+          rjs <- rjson::fromJSON(file = paste0(md_dir(), "\\md_out.json"))
+          rjs_files <- lapply(rjs$images, function(x) x$file) %>%
+            unlist()
 
 
-              files2remove <- unique(c(files2remove_a, files2remove_b))
-              # do not remove files that have been moved to md_empty folder and/or have been renamed to md_empty..
-              files2remove <- files2remove[basename(dirname(files2remove)) != "md_empty"]
-              files2remove <- files2remove[!stringr::str_detect(basename(files2remove), pattern = "^md_empty")]
+          rjs$images <- rjs$images[!rjs_files %in% files2remove]
 
-              file.remove(files2remove)
+          write(rjson::toJSON(rjs),  paste0(md_dir(), "\\md_out.json"))
 
-              rjs <- rjson::fromJSON(file = paste0(md_dir(), "\\md_out.json"))
-              rjs_files <- lapply(rjs$images, function(x) x$file) %>%
-                unlist()
+          print("Renaming files")
 
+          screened_images <-
+            md_out_threshold() %>%
+            dplyr::filter(!file %in% files2remove) %>%
+            dplyr::mutate(new_file_alternativ = ifelse(dir_category %in% c("md_person", "md_vehicle", "md_mixed") & !stringr::str_detect(basename(file), pattern = "^md_person|^md_vehicle|^md_mixed"),
+                                                       stringi::stri_replace_last_regex(file, basename(file), paste0(dir_category, "_", basename(file))),
+                                                       file))
 
-              rjs$images <- rjs$images[!rjs_files %in% files2remove]
+          screened_images_no_dupl <- screened_images %>%
+            dplyr::filter(!duplicated(file))
 
-              write(rjson::toJSON(rjs),  paste0(md_dir(), "\\md_out.json"))
-
-              print("Renaming files")
-
-              screened_images <-
-                md_out_threshold() %>%
-                dplyr::filter(!file %in% files2remove) %>%
-                dplyr::mutate(new_file_alternativ = ifelse(dir_category %in% c("md_person", "md_vehicle", "md_mixed") & !stringr::str_detect(basename(file), pattern = "^md_person|^md_vehicle|^md_mixed"),
-                                                           stringi::stri_replace_last_regex(file, basename(file), paste0(dir_category, "_", basename(file))),
-                                                           file))
-
-              screened_images_no_dupl <- screened_images %>%
-                dplyr::filter(!duplicated(file))
-
-              file.rename(screened_images_no_dupl$file, screened_images_no_dupl$new_file_alternativ)
-            }}}
+          file.rename(screened_images_no_dupl$file, screened_images_no_dupl$new_file_alternativ)
+        }
 
 
         print("Updating JSON")
@@ -506,13 +490,13 @@ shinyDMCrAI_server <- function(input, output, session) {
         })
 
         write(rjson::toJSON(rjs),  paste0(md_dir(), "\\md_out.json"))
-      }
-
+        }
+        }
 
 
 
       print("Blurring")
-      if(input$blur & any(screened_images$category_word %in%  c("md_person", "md_vehicle"))){
+      if(input$blur & any(screened_images$category_word %in%  c("md_person", "md_vehicle", "md_mixed"))){
         imgs_2blur_list <- screened_images %>%
           dplyr::filter(category_word %in% c("md_person", "md_vehicle")) %>%
           dplyr::mutate(file = new_file_alternativ) %>%
@@ -520,17 +504,20 @@ shinyDMCrAI_server <- function(input, output, session) {
           dplyr::group_split()
 
         #TODO - how to skip if already blurred?! similar to handling of files2remove!
-        shiny::withProgress(message = "Blurring images with personal data...", detail = "Vehicles and persons are blurred!", value = 0, {
+        shiny::withProgress(message = "Personenbezogene Daten verpixeln", detail = "Fahrzeuge und Personen werden unkenntlich gemacht!", value = 0, {
           for(img in seq(length(imgs_2blur_list))){
             shiny::incProgress(1/length(imgs_2blur_list))
             print(Sys.time())
             print(imgs_2blur_list[[img]])
             # add option to resize person and vehicle data? DMCrAI
+            # currently a bottleneck
             blur_md_imgs(imgs_2blur_list[[img]], sigma = input$blur_sigma, radius = input$blur_radius)
           }
         })
       }
 
+
+      shiny::showNotification(paste0(lubridate::now(), ": Prozessierung abgeschlossen, Bilder können nun manuell klassifiziert werden"))
 
       shiny::updateActionButton(session = session, inputId = "accept", "Klassifikation wurde übernommen (aktualisieren, um Änderungen in json einzulesen)")
 
