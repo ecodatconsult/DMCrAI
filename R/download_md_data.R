@@ -8,7 +8,7 @@
 #' @export
 
 download_md_data <- function(directories, include.classified = FALSE){
-  con <- DMCr2::dbConnection()
+  con <- dbConnection()
 
   if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "directories"))){
     megadetector_directories <- RPostgreSQL::dbGetQuery(con, glue::glue_sql("SELECT * FROM megadetector.directories where directory in ({directories*})", directories = directories, .con = con))

@@ -13,6 +13,11 @@
 
 create_md_bat <- function(pics_dir, md_out = pics_dir, py_scripts_loc = NULL, md_model_loc = NULL, force.overwrite = FALSE, bat_loc = NULL, run_info = FALSE, checkpoint_freq = 500){
 
+  if(file.exists(paste0(md_out,'\\md_out.json'))){
+    backup_time <- strftime(lubridate::now(), format = "%y%m%d_%H%M%S")
+    file.copy(paste0(md_out,'\\md_out.json'), paste0(md_out,'\\', backup_time, '_backup_md_out.json'))
+  }
+
   cmd_message <-
   paste0(substr(py_scripts_loc, 1 ,2), "\n",
          'cd "', py_scripts_loc,'\\cameratraps"\n',

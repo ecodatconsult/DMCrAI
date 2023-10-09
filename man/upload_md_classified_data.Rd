@@ -5,10 +5,12 @@
 \title{Upload Megadetectorergebnisse
 Lade die Ergebnisse der manuellen Klassifikation in die Datenbank hoch}
 \usage{
-upload_md_classified_data(md_classified_df)
+upload_md_classified_data(md_classified_df, include.classified)
 }
 \arguments{
 \item{md_classified_df}{data.frame, Datentabelle die mit ShinyFFM2 generiert wird}
+
+\item{include.classified}{boolean, gibt an ob auch bereits klassifizierte Daten hochgeladen werden}
 }
 \description{
 Upload Megadetectorergebnisse

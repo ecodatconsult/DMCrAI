@@ -9,7 +9,7 @@
 
 upload_md_classified_data <- function(md_classified_df, include.classified){
 
-  con <- DMCr2::dbConnection()
+  con <- dbConnection()
 
 
     if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "manually_tagged"))){
