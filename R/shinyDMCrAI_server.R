@@ -3,10 +3,14 @@
 shinyDMCrAI_server <- function(input, output, session) {
     ##### SIDEBAR PANEL -- SET DIRECTORY AND PROVIDE INITIAL INFO #####
 
+
+  exif_info <- shiny::reactiveValues(df = NULL)
+
     # refresh_nr: reactive value, increase by on if button is pressed. invalidating refresh_nr will trigger md_dir()
     refresh_nr <- shiny::reactiveVal(0)
     shiny::observe({
       refresh_nr(refresh_nr() + 1)
+      exif_info$df <- NULL
     }) %>%
       shiny::bindEvent(input$refresh)
 
@@ -44,16 +48,21 @@ shinyDMCrAI_server <- function(input, output, session) {
     # reactive, recursively screen for image files
     img_files <- shiny::reactive({
       #TODO: this may cause issues with maany files..! use some indexing?
-      shiny::showNotification(paste0(lubridate::now(), ": listing image files.."))
+      if(!is.null(md_dir())){
+        shiny::showNotification(paste0(lubridate::now(), ": Suche Bilder in Unterverzeichnissen.."))
 
-      list.files(
-        md_dir(),
-        pattern = ".jpg$|.jpeg$|.png$",
-        recursive = TRUE,
-        ignore.case = TRUE,
-        full.names = TRUE
-      ) %>%
-        normalizePath(winslash = "\\")
+        img_files <- list.files(
+          md_dir(),
+          pattern = ".jpg$|.jpeg$|.png$",
+          recursive = TRUE,
+          ignore.case = TRUE,
+          full.names = TRUE
+        ) %>%
+          normalizePath(winslash = "\\")
+        shiny::showNotification(paste0(lubridate::now(), ": Bildersuche abgeschlossen.."))
+
+        return(img_files)
+      }
     })
 
     # image files that are already processed by MD
@@ -108,10 +117,9 @@ shinyDMCrAI_server <- function(input, output, session) {
         shiny::invalidateLater(3000)
         curr_time(Sys.time())
         print(curr_time())
+        print(input)
       }
     })
-
-    exif_info <- shiny::reactiveValues(df = NULL)
 
     # generate batch script and run megadetector
     shiny::observe({
@@ -123,16 +131,24 @@ shinyDMCrAI_server <- function(input, output, session) {
       shiny::showNotification(paste0(lubridate::now(), ": Starte Megadetector"), duration = NULL)
       shiny::updateActionButton(session = session, inputId = "runMD", label = "Megadetector läuft", icon = icon("mug-hot"))
       shell.exec("shiny_md.bat")
+    }) %>%
+      shiny::bindEvent(input$runMD)
+
+    # generate batch script and run exiftool
+    shiny::observe({
+    if(is.null(exif_info$df)){
       shiny::showNotification(paste0(lubridate::now(), ": Starte exiftool zum Auslesen der Zeitstempel.."), duration = NULL)
       exif_info$df <- exif_image_info(
         md_dir = normalizePath(paste0(dirname(md_dir()), "/", basename(md_dir()))) #remove trailing // of md_dir()
       ) %>%
         dplyr::mutate(filepath = normalizePath(filepath))
       shiny::showNotification(paste0(lubridate::now(), ": Alle Zeitstempel ausgelesen!"), duration = NULL)
-
+    }else{
+      shiny::showNotification(paste0(lubridate::now(), ": Überspringe exiftool!"), duration = 2)
+    }
     }) %>%
-      shiny::bindEvent(input$runMD)
-
+      shiny::bindEvent(input$menu %in% c("panel2", "panel3"), input$runMD) %>%
+      shiny::debounce(200)
 
     # md_dir <- function() "C:\\md_pics\\beispieldaten_large\\"
     output$img_files_table <- DT::renderDataTable({
@@ -145,6 +161,8 @@ shinyDMCrAI_server <- function(input, output, session) {
       file.exists(paste0(md_dir(), .Platform$file.sep, "md_out.json"))
     })
 
+
+    # observer to check if megadetector has finished and to load json via refresh
     shiny::observe({
       print(start_time())
       if(file.exists(paste0(md_dir(), .Platform$file.sep, "md_out.json")) & !is.null(start_time())){
@@ -152,14 +170,11 @@ shinyDMCrAI_server <- function(input, output, session) {
         print(file.info(paste0(md_dir(), .Platform$file.sep, "md_out.json"))$mtime)
         new_md_out <- file.info(paste0(md_dir(), .Platform$file.sep, "md_out.json"))$mtime > start_time() | sum_unclassified_images() == 0
         if(new_md_out){
-
-          shiny::showNotification(paste0(lubridate::now(), ": Klassifikation abgeschossen!"), duration = NULL)
           shiny::updateActionButton(session = session, inputId = "runMD", label = "Klassifikation abgeschlossen!", icon = icon("face-grin-stars"))
           refresh_nr(refresh_nr() + 1)
           start_time(NULL)
         }
       }
-
     }) %>%
       shiny::bindEvent(curr_time())
 
@@ -169,6 +184,8 @@ shinyDMCrAI_server <- function(input, output, session) {
     ######################################
 
     # PROCESS MD_OUT.JSON
+
+    # read json with classification data and add category names
     md_out <- shiny::reactive({
       if(md_out_exists()){
         md_out <- lapply(load_md_out_imgs(paste0(md_dir(), .Platform$file.sep, "md_out.json")),
@@ -183,6 +200,7 @@ shinyDMCrAI_server <- function(input, output, session) {
       return(md_out)
     })
 
+    # assign events to classification data
     md_out_events_df <- shiny::reactive({
       md_out_events_df <-  md_out() %>%
         dplyr::left_join(exif_info$df, by = c("file" = "filepath")) %>%
@@ -276,29 +294,14 @@ shinyDMCrAI_server <- function(input, output, session) {
 
     # assign categories by applying thresholds
     md_out_threshold <- shiny::reactive({
-      md_obs_cats <- c("md_animal", "md_person", "md_vehicle")
-
-
-      md_out_threshold <-
-        md_out() %>%
-        dplyr::mutate(category_word = ifelse(
-          (category_word == "md_vehicle" & conf > input$vehicle_threshold) |
-            (category_word == "md_animal" & conf > input$animal_threshold) |
-            (category_word == "md_person" & conf > input$person_threshold),
-          category_word,
-          "md_empty")) %>%
-        dplyr::left_join(md_out_table_df() %>%
-                           dplyr::select(file, event_id)) %>%
-        dplyr::group_by(event_id) %>%
-        dplyr::mutate(dir_category = ifelse(
-          length(unique(category_word)) == 1,
-          category_word,
-          ifelse(
-            sum(unique(category_word) %in% md_obs_cats) > 1,
-            "md_mixed",
-            md_obs_cats[md_obs_cats %in% unique(category_word)]))) %>%
-        dplyr::ungroup()
-
+      reactive_md_out_threshold(
+        md_out = md_out(),
+        md_out_table_df = md_out_table_df(),
+        vehicle_threshold = input$vehicle_threshold,
+        animal_threshold = input$animal_threshold,
+        person_threshold = input$person_threshold,
+        md_obs_cats = c("md_animal", "md_person", "md_vehicle")
+      )
     })
 
     # Figure to inform about the proportion of event classes
@@ -314,40 +317,12 @@ shinyDMCrAI_server <- function(input, output, session) {
     shiny::observeEvent(input$accept, {
 
       if(input$process_empty_img_mode == "upload"){
-
-        md_obs_cats <- c("md_animal", "md_person", "md_vehicle")
-
-        md_out_upload <-
-          md_out_events_df() %>%
-          dplyr::mutate(category_word = ifelse(
-            (category_word == "md_vehicle" & conf > input$vehicle_threshold) |
-              (category_word == "md_animal" & conf > input$animal_threshold) |
-              (category_word == "md_person" & conf > input$person_threshold),
-            category_word,
-            "md_empty")) %>%
-          dplyr::group_by(file) %>%
-          dplyr::mutate(empty_box = dplyr::n() == 1 & category_word == "md_empty") %>%
-          dplyr::ungroup() %>%
-          dplyr::mutate(conf = ifelse(empty_box, 0 , conf),
-                        category = ifelse(empty_box, 0 , category),
-                        x_off = ifelse(empty_box, NA , x_off),
-                        y_off = ifelse(empty_box, NA , y_off),
-                        width = ifelse(empty_box, NA , width),
-                        height = ifelse(empty_box, NA , height)
-          ) %>%
-          dplyr::filter(!(!is.na(x_off) & category_word == "md_empty")) %>%
-          dplyr::group_by(event_id) %>%
-          dplyr::mutate(event_category = ifelse(
-            length(unique(category_word)) == 1,
-            category_word,
-            ifelse(
-              sum(unique(category_word) %in% md_obs_cats) > 1,
-              "md_mixed",
-              md_obs_cats[md_obs_cats %in% unique(category_word)]))) %>%
-          dplyr::ungroup() %>%
-          dplyr::filter(event_category != "md_empty")
-
-        #readr::write_csv(md_out_upload, "md_out_upload.csv")
+        md_out_upload <- prepare_md_out_upload(
+          md_out_events_df = md_out_events_df(),
+          vehicle_threshold = input$vehicle_threshold,
+          animal_threshold = input$animal_threshold,
+          person_threshold = input$person_threshold
+          )
 
         #DMCrAI
         upload_md_data(md_out_upload)

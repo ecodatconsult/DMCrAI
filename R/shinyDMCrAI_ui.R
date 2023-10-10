@@ -23,9 +23,11 @@ shinyDMCrAI_ui <- function(){
       shiny::br(),
       shiny::conditionalPanel(condition = "output.md_status > 0",
                               shiny::tabsetPanel(type = "pills",
+                                                 id = "menu",
                                    ##### UI PANEL 1 ####
 
                                    shiny::tabPanel("Megadetector ausführen",
+                                                   value = "panel1",
                                                    shiny::br(),
                                                    shiny::fluidRow(
                                                      shiny::column(3,
@@ -55,6 +57,7 @@ shinyDMCrAI_ui <- function(){
                                    ),
                                    ##### UI PANEL 2 ####
                                    shiny::tabPanel("Megadetector Output",
+                                                   value = "panel2",
                                                    shiny::conditionalPanel(condition = "output.md_status > 1",
                                                                            shiny::fluidRow( shiny::column(6,
                                                                                                   shiny::fluidRow(DT::dataTableOutput("md_out_table", height = "440px"))),
@@ -86,6 +89,7 @@ shinyDMCrAI_ui <- function(){
                                             )),
                                    ##### UI PANEL 3 ####
                                    shiny::tabPanel("Klassifizierung übernehmen",
+                                                   value = "panel3",
                                                    shiny::conditionalPanel(
                                               condition = "output.md_status > 1",
                                               shiny::fluidRow(
