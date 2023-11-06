@@ -11,7 +11,7 @@
 #'
 #' @export
 
-create_md_bat <- function(pics_dir, md_out = pics_dir, py_scripts_loc = NULL, md_model_loc = NULL, force.overwrite = FALSE, bat_loc = NULL, run_info = FALSE, checkpoint_freq = 500){
+create_md_bat <- function(pics_dir, md_out = pics_dir, py_scripts_loc = NULL, md_model_loc = NULL, force.overwrite = FALSE, bat_loc = NULL, run_info = FALSE, checkpoint_freq = 500, show_finish = TRUE){
 
   if(file.exists(paste0(md_out,'\\md_out.json'))){
     backup_time <- strftime(lubridate::now(), format = "%y%m%d_%H%M%S")
@@ -31,6 +31,11 @@ create_md_bat <- function(pics_dir, md_out = pics_dir, py_scripts_loc = NULL, md
 
   if(run_info){
     cmd_message <- paste0(cmd_message, " --checkpoint_frequency ", checkpoint_freq, " --checkpoint_path ", here::here("checkpoint.json"), " >> ", here::here("run_info.txt"))
+  }
+
+  if(show_finish){
+    cmd_message <- paste0(cmd_message, "\n",
+                           paste0("echo This file should quickly disappear>", paste0(md_out,'\\megadetector_just_finished.txt"')))
   }
 
 
