@@ -19,7 +19,7 @@ upload_md_data <- function(md_out_events){
     dplyr::select(dplyr::all_of(req_names)) %>%
     dplyr::group_by(file) %>%
     dplyr::mutate(file_id = digest::digest(file, "md5"), .before = "file") %>%
-    dokyr::ungroup()
+    dplyr::ungroup()
   megadetector_classifications_max <- 0
 
   if(RPostgreSQL::dbExistsTable(con,  c("import", "megadetector"))){
