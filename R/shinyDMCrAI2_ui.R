@@ -22,7 +22,7 @@ shinyDMCrAI2_ui <- function(){
       shiny::column(3, shiny::verbatimTextOutput("md_dir_text")),
       shiny::column(3, shiny::verbatimTextOutput("n_images_text"))),
       shiny::br(),
-      shiny::conditionalPanel(condition = "output.md_status = 1",
+      shiny::conditionalPanel(condition = "output.md_status < 2",
                               shiny::fluidRow(
                                 # shiny::column(3,
                                 #              shiny::actionButton(
@@ -40,6 +40,7 @@ shinyDMCrAI2_ui <- function(){
                                               ),
                                 shiny::column(3,
                                               shiny::verbatimTextOutput("n_images_classified_text"))),
+                              shiny::h3("Batch-Skript, um Megadetector auszuführen:"),
                               shiny::fluidRow(
                                 shiny::column(6,
                                               shiny::verbatimTextOutput("bat_file")
@@ -47,9 +48,10 @@ shinyDMCrAI2_ui <- function(){
                                 shiny::column(6,
                                               DT::dataTableOutput("img_files_table")
                                               )
-                                ),
+                                )),
                               shiny::conditionalPanel(
-                                condition = "output.md_status = 2",
+                                condition = "output.md_status > 1",
+                                shiny::h2("Megadetector abgeschlossen, Upload durchführen"),
                               shiny::fluidRow(
                                 shiny::column(3,
                                               shiny::checkboxInput(
@@ -58,7 +60,13 @@ shinyDMCrAI2_ui <- function(){
                                                 value = TRUE)
                                               ),
                                 shiny::column(3,
-                                              shiny::sliderInput(
+                                              shiny::checkboxInput(
+                                                "blur_md_mixed",
+                                                "Bounding boxes von Tieren unkenntlich machen, die zusammen mit Fahrzeugen oder Personen vorkommen",
+                                                value = TRUE)
+                                ),
+                                shiny::column(3,
+                                              shiny::numericInput(
                                                 "blur_radius",
                                                 "Blurparameter: Radius",
                                                 min = 30,
@@ -67,7 +75,7 @@ shinyDMCrAI2_ui <- function(){
                                                 step = 1)
                                               ),
                                 shiny::column(3,
-                                              shiny::sliderInput(
+                                              shiny::numericInput(
                                                 "blur_sigma",
                                                 "Blurparameter: Sigma",
                                                 min = 15,
@@ -83,7 +91,6 @@ shinyDMCrAI2_ui <- function(){
                                   width = "100%")
                                 ),
                               shiny::fluidRow(ggiraph::girafeOutput("md_threshold_figure"))
-                              )
                               )
       )
     )
