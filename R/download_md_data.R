@@ -7,18 +7,18 @@
 #'
 #' @export
 
-download_md_data <- function(directories, include.classified = FALSE){
+download_md_data <- function(deployments, include.classified = FALSE){
   con <- dbConnection()
 
-  if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "directories"))){
-    megadetector_directories <- RPostgreSQL::dbGetQuery(con, glue::glue_sql("SELECT * FROM megadetector.directories where directory in ({directories*})", directories = directories, .con = con))
-  }else{
-    stop("megadetector.directories table does not exist but is required!")
-  }
+  # if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "directories"))){
+  #   megadetector_directories <- RPostgreSQL::dbGetQuery(con, glue::glue_sql("SELECT * FROM megadetector.directories where directory in ({directories*})", directories = directories, .con = con))
+  # }else{
+  #   stop("megadetector.directories table does not exist but is required!")
+  # }
 
 
   if(RPostgreSQL::dbExistsTable(con,  c("megadetector", "classifications"))){
-    megadetector_classifications <- RPostgreSQL::dbGetQuery(con, glue::glue_sql("SELECT * FROM megadetector.classifications where directory_id in ({directories*})", directories = megadetector_directories$directory_id, .con = con))
+    megadetector_classifications <- RPostgreSQL::dbGetQuery(con, glue::glue_sql("SELECT * FROM megadetector.classifications where deployment in ({deployments*})", directories = megadetector_directories$directory_id, .con = con))
   }else{
     stop("megadetector.classifications table does not exist but is required!")
   }

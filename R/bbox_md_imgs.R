@@ -29,7 +29,7 @@ bbox_md_imgs <- function(md_img_info, out.file = tempfile("bbox_img", fileext = 
       bbox_image <- magick::image_crop(imgs, geometry)
 
       # blur sensible data on the fly with safe.mode enabled
-      if(safe.mode & md_img_info$category_word[bbox] %in% c("md_person", "md_vehicle")){
+      if(safe.mode & md_img_info$bbox_category[bbox] %in% c("md_person", "md_vehicle")){
         bbox_image <- bbox_image %>% magick::image_blur(radius = 30, sigma = 15)
       }
 

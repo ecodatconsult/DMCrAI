@@ -12,7 +12,8 @@ create_md_bat(
   force.overwrite = FALSE,
   bat_loc = NULL,
   run_info = FALSE,
-  checkpoint_freq = 500
+  checkpoint_freq = 500,
+  show_finish = TRUE
 )
 }
 \arguments{
