@@ -12,14 +12,16 @@ shinyFFM2_server <- function(input, output, session){
 
 
   #### INPUT MODAL WHEN LOADING DEPLOYMENT
-  shiny::observe({
-      shinyBS::toggleModal(session,
-                           "modal_assign_deployment_paramters",
-                           toggle = "open")
-  }) %>%
-    shiny::bindEvent(input$download1)
+  # shiny::observe({
+  #     shinyBS::toggleModal(session,
+  #                          "modal_assign_deployment_parameters",
+  #                          toggle = "open")
+  # }) %>%
+  #   shiny::bindEvent(input$download1)
 
   shiny::observe({
+    print("toggle action button")
+
     if(stringr::str_length(input$classified_by) > 6 &
        stringr::str_detect(input$classified_by, ",") &
        input$classified_by != "Name, Vorname"){
@@ -332,6 +334,30 @@ shinyFFM2_server <- function(input, output, session){
 
   # selected_bbox <- function() 1
 
+  event_images <- reactive({
+    print("loading event images")
+    print(selected_bbox$md_out$event_num)
+    ffm2_event_images(md_out = md_out, event_num = selected_bbox$md_out$event_num, scale_factor = .1)
+  }) %>%
+    bindEvent(selected_bbox$md_out$event_num)
+
+  #TODO: find a good way to display large images..
+  # output$event_imgs <- shiny::renderImage({
+  #   shiny::req(selected_bbox$md_out)
+  #
+  #   event_images() %>%
+  #     ffm2_event_images_append()
+  #
+  # }, deleteFile = TRUE)
+
+  output$event_imgs_animated <- shiny::renderImage({
+    shiny::req(selected_bbox$md_out)
+
+    event_images() %>%
+      ffm2_event_images_animate(delay = input$event_imgs_animation_fps)
+
+  }, deleteFile = TRUE)
+
   output$bbox_img <- shiny::renderImage({
     shiny::req(selected_bbox$md_out)
     #print(selected_bbox$md_out)
@@ -348,8 +374,20 @@ shinyFFM2_server <- function(input, output, session){
                          skip = empty_img)
   }, deleteFile = TRUE)
 
+  output$text_event_id <- shiny::renderText({
+    shiny::req(selected_bbox$md_out)
+    event_imgs <- md_out$df %>%
+      dplyr::filter(!duplicated(file_id)) %>%
+      dplyr::filter(event_id == selected_bbox$md_out$event_id)
+
+    curr_img_pos <- which(event_imgs$file_id == selected_bbox$md_out$file_id)
+
+    paste0("Event: ", selected_bbox$md_out$event_id, " - Bild ", curr_img_pos, " von ", nrow(event_imgs))
+  })
+
   # selected_bbox_num_adjust <- function() 19
   output$md_table <- shiny::renderTable({
+    shiny::req(selected_bbox_num_adjust())
     rows <- (selected_bbox_num_adjust() - 2) : (selected_bbox_num_adjust() + 2) %% nrow(md_out$df)
     rows[rows == 0] <- nrow(md_out$df)
 

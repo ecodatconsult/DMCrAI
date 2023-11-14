@@ -34,9 +34,9 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                          Speichert in der Session klassifizierte Bilder in der Datenbank (Shortcut: shift+s)",
                          options = list(container = "body"))
     ),
-    shinyBS::bsModal("modal_assign_deployment_paramters",
-                     "Deployment-Einstellungen",
-                     "download",
+    shinyBS::bsModal(id = "modal_assign_deployment_parameters",
+                    title =  "Deployment-Einstellungen",
+                    trigger =  "download1",
                      size = "large",
                      shiny::fluidRow(
                        shiny::column(2,
@@ -91,8 +91,26 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                      ),
 
     shiny::conditionalPanel(condition = "output.dirs_available == true",
+                            #shiny::fluidRow(shiny::imageOutput("event_imgs", height = "200px")), #display event images at top
                      shiny::fluidRow(shiny::column(6,shiny::imageOutput("full_img", height = "500px", brush = "manual_bbox")),
-                              shiny::column(6,shiny::imageOutput("bbox_img", height = "500px"))
+
+                                     shiny::column(6,
+                                                   shiny::tabsetPanel(
+                                                     shiny::tabPanel("Zoom auf BoundingBox",
+                                                shiny::imageOutput("bbox_img", height = "500px")
+                                                ),
+                                                shiny::tabPanel("Eventanimation",
+                                                shiny::fluidRow(shiny::sliderInput("event_imgs_animation_fps", "Bilder pro Sekunde", min = .5, max = 3, step = .1, value = 1, width = "300px")),
+                                                shiny::fluidRow(shiny::imageOutput("event_imgs_animated", height = "400px"))
+                                       )
+                                     ))
+
+                     ),
+                     shiny::fluidRow(
+                       shiny::column(3),
+                       shiny::column(6, shiny::textOutput("text_event_id")),
+                       #htmltools::tags$head(htmltools::tags$style("#text_event_id{font-size: 20px;}")),
+                       shiny::column(3)
                      ),
 
                      shiny::fluidRow(

@@ -5,12 +5,12 @@
 \title{Download Megadetectorergebnisse
 Lade die Ergebnisse der Megadetector-Klassifikation aus der Datenbank}
 \usage{
-download_md_data(directories, include.classified = FALSE)
+download_md_data(deployments, include.classified = FALSE)
 }
 \arguments{
-\item{directories}{character vector, Pfade zu den gewählten directories, die klassifiziert werden}
-
 \item{include.classified}{boolean, gibt an ob auch bereits klassifizierte Bounding Boxes geladen werden sollen}
+
+\item{directories}{character vector, Pfade zu den gewählten directories, die klassifiziert werden}
 }
 \description{
 Download Megadetectorergebnisse
