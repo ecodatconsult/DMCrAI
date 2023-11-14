@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-*.csv
+*db_login.csv
 *.bat
+*md.csv
