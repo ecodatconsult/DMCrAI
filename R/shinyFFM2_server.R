@@ -1,6 +1,6 @@
 shinyFFM2_server <- function(input, output, session){
 
-  #### UPDATE SELECTION OF DEPLOYMENTS BASED ON SELECTED PROJECT
+  #### UPDATE SELECTION OF DEPLOYMENTS BASED ON SELECTED PROJECT ####
   shiny::observe({
     shiny::updateSelectInput(session,
                              inputId = "deployment",
@@ -12,13 +12,8 @@ shinyFFM2_server <- function(input, output, session){
 
 
   #### INPUT MODAL WHEN LOADING DEPLOYMENT
-  # shiny::observe({
-  #     shinyBS::toggleModal(session,
-  #                          "modal_assign_deployment_parameters",
-  #                          toggle = "open")
-  # }) %>%
-  #   shiny::bindEvent(input$download1)
 
+  # prevent loading deployment if attributes are not specified
   shiny::observe({
     print("toggle action button")
 
@@ -35,8 +30,22 @@ shinyFFM2_server <- function(input, output, session){
         disabled = FALSE
       )
     }
+
   }) %>%
-  bindEvent(input$classified_by)
+    bindEvent(input$classified_by)
+
+
+  # close modal and reset reactive values
+  shiny::observe({
+    # reset reactive values
+    selected_bbox$md_out <- NULL
+    md_out$df <- NULL
+
+    shinyBS::toggleModal(session,
+                         "modal_assign_deployment_parameters",
+                         toggle = "close")
+  }) %>%
+    shiny::bindEvent(input$download2)
 
 
   #### STATIC INFORMATION ABOUT POSSIBLE CHOICES WHEN UPDATING SELECTIONS
@@ -65,8 +74,6 @@ shinyFFM2_server <- function(input, output, session){
 
 
 
-
-
   #### HANDLE DOWNLOAD OF MEGADETECTOR OUTPUT
   selected_bbox <- shiny::reactiveValues(md_out = NULL)
   md_out <- shiny::reactiveValues(df = NULL)
@@ -74,9 +81,10 @@ shinyFFM2_server <- function(input, output, session){
 #   input <- list(project_id = "test", deployment = "wvb_ff_5034_220809", event_definition = 5, md_categories = "md_animal", md_threshold = 0.6)
 
 
+  # download if button in modal is activated
+  #TODO: make post-processing a function which can be tested
 
   shiny::observe({
-
     md_out$df<-
     download_import_megadetector_bboxes(
       project_id = input$project,
@@ -107,6 +115,7 @@ shinyFFM2_server <- function(input, output, session){
   })  %>%
     shiny::bindEvent(input$download2)
 
+  # counter for the selected bounding box (adjust prevents negative index)
   selected_bbox_num <- shiny::reactiveVal(1)
 
   selected_bbox_num_adjust <- shiny::reactive({
@@ -117,6 +126,8 @@ shinyFFM2_server <- function(input, output, session){
            selected_bbox_num() %% nrow(md_out$df))
   })
 
+
+  # update selected bounding box based on arrow input
   shiny::observe({
     if(input$keys == "left") selected_bbox_num(selected_bbox_num() - 1)
     if(input$keys == "right") selected_bbox_num(selected_bbox_num() + 1)
@@ -231,23 +242,30 @@ shinyFFM2_server <- function(input, output, session){
   # shiny::outputOptions(output, "bbox_type", suspendWhenHidden = FALSE)
 
   # accept classification for all bounding boxes in the picture
+
   shiny::observe({
-    if(input$keys == "pagedown" & selected_bbox$md_out$bbox_category != "manual"){
-      selected_bbox$md_out$species = input$species
-      selected_bbox$md_out$sex = input$sex
-      selected_bbox$md_out$age = input$age
-      selected_bbox$md_out$behaviour = input$behaviour
-      selected_bbox$md_out$ID = input$ID
-      selected_bbox$md_out$classified = TRUE
-
-      current_file <- md_out$df$file[selected_bbox_num_adjust()]
-
-      for(bbox in which(md_out$df$file == current_file)) md_out$df[bbox, ] <- selected_bbox$md_out
-
+    if(input$keys == "pagedown"){
       selected_bbox_num(bbox + 1)
     }
-  }) %>%
-    shiny::bindEvent(input$keys)
+  })
+
+  # shiny::observe({
+  #   if(input$keys == "pagedown" & selected_bbox$md_out$bbox_category != "manual"){
+  #     selected_bbox$md_out$species = input$species
+  #     selected_bbox$md_out$sex = input$sex
+  #     selected_bbox$md_out$age = input$age
+  #     selected_bbox$md_out$behaviour = input$behaviour
+  #     selected_bbox$md_out$ID = input$ID
+  #     selected_bbox$md_out$classified = TRUE
+  #
+  #     current_file <- md_out$df$file[selected_bbox_num_adjust()]
+  #
+  #     for(bbox in which(md_out$df$file == current_file)) md_out$df[bbox, ] <- selected_bbox$md_out
+  #
+  #     selected_bbox_num(bbox + 1)
+  #   }
+  # }) %>%
+  #   shiny::bindEvent(input$keys)
 
   shiny::observe({
     #print(input$keys)
@@ -334,12 +352,32 @@ shinyFFM2_server <- function(input, output, session){
 
   # selected_bbox <- function() 1
 
-  event_images <- reactive({
-    print("loading event images")
-    print(selected_bbox$md_out$event_num)
-    ffm2_event_images(md_out = md_out, event_num = selected_bbox$md_out$event_num, scale_factor = .1)
-  }) %>%
-    bindEvent(selected_bbox$md_out$event_num)
+
+  event_images <- shiny::reactiveValues(imgs = NULL, event_num = -999)
+
+  shiny::observe({
+    if(deployment_loaded() & !is.null(selected_bbox$md_out)){
+      print(event_images$event_num)
+      print(selected_bbox$md_out$event_num)
+      if(event_images$event_num != selected_bbox$md_out$event_num){
+        print("loading event images")
+        event_images$imgs <- ffm2_event_images(md_out = md_out,
+                                                event_num = selected_bbox$md_out$event_num,
+                                                scale_factor = input$event_imgs_animation_sf)
+        event_images$event_num <- selected_bbox$md_out$event_num
+      }
+      print("skipping")
+    }
+  })
+
+  # event_images <- reactive({
+  #
+  #   print("loading event images")
+  #   print(selected_bbox$md_out$event_num)
+  #   event_images_num(selected_bbox$md_out$event_num)
+  #   ffm2_event_images(md_out = md_out, event_num = selected_bbox$md_out$event_num, scale_factor = .1)
+  # }) %>%
+  #   bindEvent(event_images_num() != selected_bbox$md_out$event_num)
 
   #TODO: find a good way to display large images..
   # output$event_imgs <- shiny::renderImage({
@@ -353,8 +391,8 @@ shinyFFM2_server <- function(input, output, session){
   output$event_imgs_animated <- shiny::renderImage({
     shiny::req(selected_bbox$md_out)
 
-    event_images() %>%
-      ffm2_event_images_animate(delay = input$event_imgs_animation_fps)
+    event_images$imgs %>%
+      ffm2_event_images_animate(fps = as.numeric(input$event_imgs_animation_fps))
 
   }, deleteFile = TRUE)
 
@@ -384,6 +422,61 @@ shinyFFM2_server <- function(input, output, session){
 
     paste0("Event: ", selected_bbox$md_out$event_id, " - Bild ", curr_img_pos, " von ", nrow(event_imgs))
   })
+
+  ### Eventtable https://stackoverflow.com/questions/53908266/r-shiny-remove-row-button-in-data-table
+  buttonCounter <- 0L
+  values <- reactiveValues()
+  values$tab <- tibble(
+    EventNr = 0,
+    Art = NULL,
+                        Anzahl = NULL,
+                        Geschlecht = NULL,
+                        Alter = NULL,
+                        Verhalten = NULL,
+                        ID_Merkmal = NULL,
+                        Bemerkungen = NULL,
+                        id = 0) %>%
+    rowwise() %>%
+    mutate(Remove = util_removeButton(id, idS = "", lab = "Tab1"))
+
+  proxyTable <- DT::dataTableProxy("tab")
+
+  output$event_table <- DT::renderDataTable({
+    DT::datatable(values$tab %>% dplyr::filter(EventNr == selected_bbox$md_out$event_num),
+                  options = list(pageLength = 25,
+                                 dom        = "rt"),
+                  rownames = FALSE,
+                  escape   = FALSE,
+                  editable = TRUE)
+  })
+
+  observeEvent(input$remove_button_Tab1, {
+    myTable <- values$tab
+    s <- as.numeric(strsplit(input$remove_button_Tab1, "_")[[1]][2])
+    myTable <- dplyr::filter(myTable, id != s)
+    DT::replaceData(proxyTable, myTable, resetPaging = FALSE)
+    values$tab <- myTable
+  })
+  observeEvent(input$add2event, {
+    buttonCounter <<- buttonCounter + 1L
+    myTable <- shiny::isolate(values$tab)
+    myTable <- dplyr::bind_rows(
+      myTable,
+      dplyr::tibble(
+        EventNr = selected_bbox$md_out$event_num,
+        Art = input$species,
+             Anzahl = input$count,
+             Geschlecht = input$sex,
+             Alter = input$age,
+             Verhalten = input$behaviour,
+             ID_Merkmal = input$ID,
+             Bemerkungen = input$comment) %>%
+        dplyr::mutate(id = buttonCounter,
+               Remove = getRemoveButton(buttonCounter, idS = "", lab = "Tab1")))
+    DT::replaceData(proxyTable, myTable, resetPaging = FALSE)
+    values$tab <- myTable
+  })
+
 
   # selected_bbox_num_adjust <- function() 19
   output$md_table <- shiny::renderTable({

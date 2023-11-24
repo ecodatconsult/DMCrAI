@@ -1,5 +1,5 @@
 #' @export
-
+#'
 runShinyFFM2 <- function(...){
 
   species_table <- readr::read_csv2(system.file("arten.csv", package = "DMCrAI")) %>%

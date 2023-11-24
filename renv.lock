@@ -564,6 +564,18 @@
       ],
       "Hash": "266a20443ca13c65688b2116d5220f76"
     },
+    "keys": {
+      "Package": "keys",
+      "Version": "0.1.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "htmltools",
+        "jsonlite",
+        "shiny"
+      ],
+      "Hash": "df0e98400b283490030332d56153f79d"
+    },
     "knitr": {
       "Package": "knitr",
       "Version": "1.44",
@@ -938,7 +950,7 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.7.5",
+      "Version": "1.7.5.1",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
@@ -968,7 +980,18 @@
         "withr",
         "xtable"
       ],
-      "Hash": "438b99792adbe82a8329ad8697d45afe"
+      "Hash": "5ec01cc255f2138fc2f0dc74d2b1a1a1"
+    },
+    "shinyBS": {
+      "Package": "shinyBS",
+      "Version": "0.61.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "htmltools",
+        "shiny"
+      ],
+      "Hash": "e44255f073ecdc26ba6bc2ce3fcf174d"
     },
     "shinyFiles": {
       "Package": "shinyFiles",

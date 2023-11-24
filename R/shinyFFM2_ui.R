@@ -1,4 +1,3 @@
-
 shinyFFM2_ui <- function(choices, species_table, ...){
     ui <- shiny::fluidPage(
     keys::useKeys(),
@@ -19,7 +18,7 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                                           choices = "Erst Projekt wählen",
                                           selected = NULL)),
       shiny::column(1, shiny::actionButton("download1",
-                                           "Abrufen",
+                                           "Deployment abrufen",
                                            icon = shiny::icon("download")
                                            )
                     ),
@@ -80,7 +79,7 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                        shiny::fluidRow(
                       shinyBS::bsButton(
                         "download2",
-                        "Abrufen",
+                        "Deployment abrufen",
                         icon = shiny::icon("download"),
                         size = "large",
                         type = "action",
@@ -100,7 +99,9 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                                                 shiny::imageOutput("bbox_img", height = "500px")
                                                 ),
                                                 shiny::tabPanel("Eventanimation",
-                                                shiny::fluidRow(shiny::sliderInput("event_imgs_animation_fps", "Bilder pro Sekunde", min = .5, max = 3, step = .1, value = 1, width = "300px")),
+                                                fluidRow(
+                                                  column(6, (shiny::selectInput("event_imgs_animation_fps", "Bilder pro Sekunde", choices = c(1,2,5,10,20), selected = 2, width = "100%"))),
+                                                  column(6, shiny::numericInput("event_imgs_animation_sf", "Skalierungsfaktor", min = .05, max = 1, value = .1, step = .01, width = "100%"))),
                                                 shiny::fluidRow(shiny::imageOutput("event_imgs_animated", height = "400px"))
                                        )
                                      ))
@@ -117,6 +118,7 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                        shiny::column(2),
                        shiny::column(1, shiny::actionButton(inputId = "left", label = "Vorherige Box", icon = shiny::icon("arrow-left"), width = "100%")),
                        shiny::column(1, shiny::selectInput("species", "Artname", choices = choices$species)),
+                       shiny::column(1, shiny::numericInput("count", "Anzahl [nur Event]", 1, min = 1, step = 1)),
                        shinyBS::bsTooltip("species", "Artnamen eingeben. Es gibt folgende Shortcuts:\n1: Rothirsch\n2: Reh", options = list(container = "body")),
                        shiny::column(1, shiny::selectInput("sex", "Geschlecht", choices = choices$sex)),
                        shiny::column(1, shiny::selectInput("age", "Alter", choices = choices$age)),
@@ -126,12 +128,15 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                        shiny::column(1, shiny::actionButton(inputId = "right", label = "Nächste Box", icon = shiny::icon("arrow-right"), width = "100%")),
                        shiny::column(2)),
                      shiny::fluidRow(
-                       shiny::column(4),
-                       shiny::column(4, shiny::actionButton(inputId = "accept", "Klassifizierung übernehmen (Leerzeichen)", icon = shiny::icon("circle-check"), width = "100%")),
+                       shiny::column(2),
+                       shiny::column(4, shiny::actionButton(inputId = "add2event", "Event: Klassifizierung hinzufügen (Leerzeichen)", icon = shiny::icon("circle-check"), width = "100%")),
+                       shiny::column(4, shiny::actionButton(inputId = "accept", "Bounding Box: Klassifizierung übernehmen (Leerzeichen)", icon = shiny::icon("circle-check"), width = "100%")),
                        shiny::column(2, shiny::conditionalPanel(condition = "output.bbox_type == 'manual'", shiny::actionButton(inputId = "remove_row", "Drücke 'Entf' um manuelle Bounding Box zu entfernen", icon = shiny::icon("trash")))),
                        shiny::column(2)
                      ),
                      shiny::fluidRow(
+                       h4("Eventtabelle"),
+                       DT::dataTableOutput("event_table"),
                        shiny::tableOutput("md_table")
                      )
     )

@@ -25,7 +25,6 @@ Imports:
     readr,
     rjson,
     RPostgreSQL,
-    shiny,
     shinyFiles,
     shinythemes,
     stringi,
@@ -34,3 +33,6 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Depends: 
+    shiny,
+    shinyBS

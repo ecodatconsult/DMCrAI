@@ -2,7 +2,6 @@
 #'
 
 ffm2_event_images_animate <- function(event_images, ...){
-  # event_images = imgs_read
 
   event_images_animated <-
     event_images %>%
