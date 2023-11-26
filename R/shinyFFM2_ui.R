@@ -121,10 +121,10 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                        shiny::column(1, shiny::numericInput("count", "Anzahl [nur Event]", 1, min = 1, step = 1)),
                        shinyBS::bsTooltip("species", "Artnamen eingeben. Es gibt folgende Shortcuts:\n1: Rothirsch\n2: Reh", options = list(container = "body")),
                        shiny::column(1, shiny::selectInput("sex", "Geschlecht", choices = choices$sex)),
-                       shiny::column(1, shiny::selectInput("age", "Alter", choices = choices$age)),
+                       shiny::column(1, shiny::selectInput("age_class", "Alter", choices = choices$age)),
                        shiny::column(1, shiny::selectInput("behaviour", "Verhalten", choices = choices$behaviour)),
-                       shiny::column(1, shiny::textInput("ID", "ID-Merkmal", value = NA)),
-                       shiny::column(1, shiny::textInput("comment", "Bemerkungen", value = NA)),
+                       shiny::column(1, shiny::textInput("id_of_animal", "ID-Merkmal", value = NA)),
+                       shiny::column(1, shiny::textInput("notes", "Bemerkungen", value = NA)),
                        shiny::column(1, shiny::actionButton(inputId = "right", label = "Nächste Box", icon = shiny::icon("arrow-right"), width = "100%")),
                        shiny::column(2)),
                      shiny::fluidRow(
