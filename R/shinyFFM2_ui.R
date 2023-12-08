@@ -29,10 +29,21 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                                            icon = shiny::icon("database")
                                            )
                     ),
+      shiny::column(1, shiny::actionButton("locations1",
+                                           "Standorte verwalten",
+                                           icon = shiny::icon("download")
+      )
+      ),
       shinyBS::bsTooltip("upload", "
                          Speichert in der Session klassifizierte Bilder in der Datenbank (Shortcut: shift+s)",
                          options = list(container = "body"))
     ),
+    shinyBS::bsModal(id = "modal_add_standorte",
+                     title = "Standortverwaltung",
+                     trigger = "locations1",
+                     size = "large",
+                     shiny::uiOutput("add_standorte")
+                     ),
     shinyBS::bsModal(id = "modal_assign_deployment_parameters",
                     title =  "Deployment-Einstellungen",
                     trigger =  "download1",

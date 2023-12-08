@@ -1,5 +1,7 @@
 #' @export
 #'
+#'
+#'
 runShinyFFM2 <- function(...){
 
   species_table <- readr::read_csv2(system.file("arten.csv", package = "DMCrAI")) %>%
@@ -18,5 +20,5 @@ runShinyFFM2 <- function(...){
 
   options(DT.options = list(pageLength = 5))
   Sys.setenv(TZ='UTC')
-  shiny::shinyApp(shinyFFM2_ui(choices, species_table), shinyFFM2_server, ...)
+  shiny::shinyApp(shinyFFM2_ui(choices, species_table), shinyFFM2_server, options = list("launch.browser" = TRUE), ...)
 }

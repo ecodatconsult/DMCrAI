@@ -1,5 +1,248 @@
 shinyFFM2_server <- function(input, output, session){
 
+  #######
+
+  output$add_standorte <- renderUI({
+
+      fluidPage(
+        tabsetPanel(type = "tabs",
+                    tabPanel("Upload",
+                             shinyFiles::shinyFilesButton(
+                               'sf11',
+                               '.shp oder .gpkg auswählen'
+                               , '.shp oder .gpkg auswählen'
+                               , multiple = FALSE
+                               , class = "btn-primary"
+                    ),
+                    textOutput("colnames11_1"),
+                    textOutput("colnames11_2"),
+                    verbatimTextOutput("path_sf11", placeholder = TRUE),
+
+                    ## Projekt
+                    selectizeInput(
+                      'project11'
+                      , label = "Projekt aus der Datenbank wählen"
+                      , choices = projectsDB()
+                      , multiple=FALSE
+                      , selected = ""
+                    ),
+                    textOutput("status_check_names1"),
+                    DT::DTOutput('x5'),
+                    textOutput("status_check_names12"),
+                    actionButton("upload11", "Übernehmen & hochladen", class = "btn-warning"),
+                    textOutput("status_upload11")
+                    ),
+                    tabPanel(
+                      "Karte",
+                      fluidRow(selectizeInput(
+                        'project11'
+                        , label = "Projekt aus der Datenbank wählen"
+                        , choices = projectsDB()
+                        , multiple=FALSE
+                        , selected = ""
+                      )),
+                      fluidRow(leaflet::leafletOutput("standorte_map",  width = "100%", height = "600px"))),
+                    tabPanel("Neue Fotofallen Standorte", DT::dataTableOutput('standorte11')),
+                    tabPanel("DB Fotofallen Standorte", DT::dataTableOutput('standorte12'))
+        )
+      )
+  })
+
+  ## Pfad zum Shapefile
+
+
+  path_sf11 <- reactive({
+    req(input$sf11)
+    output$status_upload11 <- NULL
+    roots <- shinyFiles::getVolumes()()
+    shinyFiles::shinyFileChoose(input, 'sf11', roots= roots, filetypes=c('shp', 'gpkg'))
+    return(shinyFiles::parseFilePaths(roots,input$sf11)$datapath)
+  })
+
+  output$path_sf11 <- renderText(ifelse(isTruthy(path_sf11()), path_sf11(), "Fotofallenstandorte auswählen"))
+
+  # path_sf11 <- function() "C:/Fotofallen-App/standorte_altered_columnname.gpkg"
+  # input <- list(project11 = "Baummardermonitoring")
+  #
+  standorte_list <- reactive({
+    if(isTruthy(path_sf11()) & input$project11 != ""){
+      return(importStandorte(file_path = path_sf11(), project = input$project11))
+    }
+  })
+
+  standorte_import_new_sf_names_corr <- reactive({
+    if(isTruthy(standorte_list())){
+      return(checkStandorteNamesWrong(standorte_list()$standorte_import_new_sf))
+    }
+  })
+
+  truthy_standorte <- reactive(isTruthy(standorte_import_new_sf_names_corr()))
+
+
+
+  output$standorte_map <- leaflet::renderLeaflet({
+    req(isTruthy(standorte_import_new_sf_names_corr()))
+
+
+    lf <- leaflet::leaflet(standorte_import_new_sf_names_corr()[[3]] %>%
+                             sf::st_transform(4326)) %>%
+      leaflet::addTiles(group = "OpenStreetMap") %>%
+      leaflet::addProviderTiles("Stamen.Toner",
+                                group = "Toner by Stamen") %>%
+      leaflet::addCircleMarkers(popup = standorte_import_new_sf_names_corr()[[3]] %>%
+                                  leafpop::popupTable(zcol = 1:5, feature.id = FALSE, row.numbers = FALSE),
+                                popupOptions = leaflet::popupOptions(closeOnClick = TRUE), fillOpacity = .8, fillColor = "gray", color = "white", group = "Neue Standorte") %>%
+      leaflet::addLayersControl(baseGroups = c("OpenStreetMap", "Toner by Stamen"),
+                       overlayGroups = c("Neue Standorte", "Standorte in Datenbank")) %>%
+      leaflet::addScaleBar(options = leaflet::scaleBarOptions(imperial = FALSE))
+
+
+    if(nrow(standorte_list()$standorte_DB) > 0){
+      lf <-lf %>%
+        leaflet::addCircleMarkers(popup = standorte_list()$standorte_DB %>%leafpop::popupTable(zcol = 1:5, feature.id = FALSE, row.numbers = FALSE),
+                                  popupOptions = leaflet::popupOptions(closeOnClick = TRUE), fillOpacity = 1, fillColor = "red", color = "white", radius = 5, group = "Standorte in Datenbank")
+
+    }
+
+    return(lf)
+  })
+
+
+
+  # either manually corrected or
+  output$standorte11 <- renderDataTable({
+    if(standorte_correction_correct()){
+      standorte_import_new_names_corr_final_sf()
+    }else{
+      standorte_import_new_sf_names_corr()[[3]]
+    }
+  }, options = list(pageLength = 10, scrollX = TRUE)
+  )
+
+
+  output$standorte12 <- renderDataTable(
+    standorte_list()$standorte_DB
+    , options = list(pageLength = 10, scrollX = TRUE))
+
+
+  standorte_names_corr_manual <- reactiveValues(df = NULL)
+
+  output$status_check_names1 <- renderText({
+    if(is.null(standorte_import_new_sf_names_corr())){
+      return("Standortdaten haben zu wenige Spalten, überprüfe den Datensatz!")
+    }else{
+      if(nrow(standorte_import_new_sf_names_corr()$wrong_names_df) > 0){
+        return(paste0("Es fehlt/fehlen die Spalte(n) ", paste(standorte_import_new_sf_names_corr()$missing_names %>% as.vector(), collapse = ", "), ". Folgende Spaltenbezeichnungen müssen entsprechend korrigiert werden:"))
+      }else{
+        return("Alle Spaltenbezeichnungen vorhanden!")
+      }
+    }
+  })
+
+  observeEvent(truthy_standorte(),{
+    standorte_names_corr_manual$df <- standorte_import_new_sf_names_corr()$wrong_names_df
+    render_dt = function(data, editable = 'cell', server = TRUE, ...) {
+      DT::renderDT(data, selection = 'none', server = server, editable = editable, ...)
+    }
+
+    output$x5 <- render_dt(standorte_names_corr_manual$df, list(target = 'column', disable = list(columns = c(1,3))))
+
+    #output$x5 = DT::renderDT(standorte_names_corr_manual$df, list(target = 'column', disable = list(columns = c(1,3))))
+  }, ignoreNULL = FALSE)
+
+
+  observeEvent(input$x5_cell_edit, {
+    standorte_names_corr_manual$df <<- DT::editData(standorte_names_corr_manual$df, input$x5_cell_edit, 'x5')
+  })
+
+
+  standorte_correction_correct <- reactive({
+    db_names <- getInfoDB(type = "column_name", schema = "fotofallen", table = "fotofallen_standorte_import")
+    import_names <- c(names(standorte_import_new_sf_names_corr()[[3]]), standorte_names_corr_manual$df$korrigiert)
+
+    return(all(db_names %in% import_names))
+  })
+
+  output$status_check_names12 <- renderText({
+    if(!standorte_correction_correct()){
+      "Nicht alle erforderlichen Spalten vorhanden. Überprüfe Datensatz und Korrektur. Kein Upload möglich."
+    }else{
+      "Erfolgreich korrigiert! Upload möglich."
+    }
+  })
+
+
+  standorte_import_new_names_corr_final_sf <- reactive({
+    checkStandorteNamesCorr(
+      standorte_import_new_sf_names_corr()[[3]],
+      standorte_names_corr_manual$df)
+  }) %>%
+    bindEvent(standorte_correction_correct())
+
+
+  ## Hochladen
+
+  # Create object to store reactive values
+  vals11 <- reactiveValues(
+    txt = NULL,
+    error_msg = NULL,
+    print = FALSE
+  )
+
+  # Create modal
+  popupModal11 <- function() {
+    modalDialog(
+      passwordInput("txt11", "Passwort"),
+
+      textOutput("skip_error_msg11"),
+
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("ok11", "OK")
+      )
+    )
+  }
+
+  # Show modal when button is clicked
+  observeEvent(input$upload11,{
+    if(standorte_correction_correct()){
+      vals11$error_msg <- NULL
+      showModal(popupModal11())
+      output$status_upload11 <- renderText("Starte Uploadprozess, bitte authentifizieren.")
+    }else{
+      output$status_upload11 <- renderText("Datenüberprüfung nicht erfolgreich abgeschlossen, kein Upload möglich!")
+    }
+  })
+
+  # Validate submission
+  observeEvent(input$ok11, {
+    # vals11$txt <- input$txt11
+    # psw <- reactive(input$txt11)
+
+    if (!is.null(input$txt11) && nzchar(input$txt11)) {
+      vals11$print <- TRUE
+      if(dbConnectionWorking(psw = input$txt11)){
+        removeModal()
+        uploadMessage <- uploadStandorte(standorte_import_new_names_corr_final_sf(), db_table = "fotofallen_standorte_import")
+        output$status_upload11 <- renderText(uploadMessage)
+      }else {
+        vals11$error_msg <- "Passwort falsch!"
+      }
+    } else {
+      vals11$error_msg <- "Du musst ein Passwort angeben."
+    }
+  })
+
+  # Output error message
+  output$skip_error_msg11 <- renderText({
+    vals11$error_msg
+  })
+
+  #######
+
+
+
+
   #### KEY REACTIVE VALUES
   selected_bbox <- shiny::reactiveValues(md_out = NULL)
   manual_bbox <- shiny::reactiveValues(df = NULL)
