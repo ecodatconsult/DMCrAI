@@ -3,49 +3,7 @@ shinyFFM2_server <- function(input, output, session){
   #######
 
   output$add_standorte <- renderUI({
-
-      fluidPage(
-        tabsetPanel(type = "tabs",
-                    tabPanel("Upload",
-                             shinyFiles::shinyFilesButton(
-                               'sf11',
-                               '.shp oder .gpkg auswählen'
-                               , '.shp oder .gpkg auswählen'
-                               , multiple = FALSE
-                               , class = "btn-primary"
-                    ),
-                    textOutput("colnames11_1"),
-                    textOutput("colnames11_2"),
-                    verbatimTextOutput("path_sf11", placeholder = TRUE),
-
-                    ## Projekt
-                    selectizeInput(
-                      'project11'
-                      , label = "Projekt aus der Datenbank wählen"
-                      , choices = projectsDB()
-                      , multiple=FALSE
-                      , selected = ""
-                    ),
-                    textOutput("status_check_names1"),
-                    DT::DTOutput('x5'),
-                    textOutput("status_check_names12"),
-                    actionButton("upload11", "Übernehmen & hochladen", class = "btn-warning"),
-                    textOutput("status_upload11")
-                    ),
-                    tabPanel(
-                      "Karte",
-                      fluidRow(selectizeInput(
-                        'project11'
-                        , label = "Projekt aus der Datenbank wählen"
-                        , choices = projectsDB()
-                        , multiple=FALSE
-                        , selected = ""
-                      )),
-                      fluidRow(leaflet::leafletOutput("standorte_map",  width = "100%", height = "600px"))),
-                    tabPanel("Neue Fotofallen Standorte", DT::dataTableOutput('standorte11')),
-                    tabPanel("DB Fotofallen Standorte", DT::dataTableOutput('standorte12'))
-        )
-      )
+    ffm2_camtraploc_ui()
   })
 
   ## Pfad zum Shapefile
@@ -83,23 +41,31 @@ shinyFFM2_server <- function(input, output, session){
   output$standorte_map <- leaflet::renderLeaflet({
     req(isTruthy(standorte_import_new_sf_names_corr()))
 
+   print(standorte_import_new_sf_names_corr()[[3]])
 
-    lf <- leaflet::leaflet(standorte_import_new_sf_names_corr()[[3]] %>%
-                             sf::st_transform(4326)) %>%
+   print(standorte_list())
+
+    lf <- leaflet::leaflet() %>%
       leaflet::addTiles(group = "OpenStreetMap") %>%
-      leaflet::addProviderTiles("Stamen.Toner",
-                                group = "Toner by Stamen") %>%
-      leaflet::addCircleMarkers(popup = standorte_import_new_sf_names_corr()[[3]] %>%
+      leaflet::addCircleMarkers(data = standorte_import_new_sf_names_corr()[[3]] %>%
+                                  sf::st_transform(4326),
+                                popup = standorte_import_new_sf_names_corr()[[3]] %>%
                                   leafpop::popupTable(zcol = 1:5, feature.id = FALSE, row.numbers = FALSE),
-                                popupOptions = leaflet::popupOptions(closeOnClick = TRUE), fillOpacity = .8, fillColor = "gray", color = "white", group = "Neue Standorte") %>%
-      leaflet::addLayersControl(baseGroups = c("OpenStreetMap", "Toner by Stamen"),
+                                popupOptions = leaflet::popupOptions(closeOnClick = TRUE),
+                                fillOpacity = .8,
+                                fillColor = "gray",
+                                radius = 20,
+                                color = "white",
+                                group = "Neue Standorte") %>%
+      leaflet::addLayersControl(baseGroups = c("OpenStreetMap"),
                        overlayGroups = c("Neue Standorte", "Standorte in Datenbank")) %>%
       leaflet::addScaleBar(options = leaflet::scaleBarOptions(imperial = FALSE))
 
 
+
     if(nrow(standorte_list()$standorte_DB) > 0){
       lf <-lf %>%
-        leaflet::addCircleMarkers(popup = standorte_list()$standorte_DB %>%leafpop::popupTable(zcol = 1:5, feature.id = FALSE, row.numbers = FALSE),
+        leaflet::addCircleMarkers(data = standorte_list()$standorte_DB %>% sf::st_transform(4326), popup = standorte_list()$standorte_DB %>%leafpop::popupTable(zcol = 1:5, feature.id = FALSE, row.numbers = FALSE),
                                   popupOptions = leaflet::popupOptions(closeOnClick = TRUE), fillOpacity = 1, fillColor = "red", color = "white", radius = 5, group = "Standorte in Datenbank")
 
     }

@@ -31,7 +31,7 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                     ),
       shiny::column(1, shiny::actionButton("locations1",
                                            "Standorte verwalten",
-                                           icon = shiny::icon("download")
+                                           icon = shiny::icon("location-crosshairs")
       )
       ),
       shinyBS::bsTooltip("upload", "
