@@ -230,6 +230,35 @@ shinyFFM2_server <- function(input, output, session){
 
   #### INPUT MODAL WHEN LOADING DEPLOYMENT
 
+  output$deployment_summary <- renderDataTable({
+    download_import_megadetector_bboxes(
+      project_id = input$project,
+      deployment = input$deployment) |>
+      dplyr::mutate(category = ifelse(conf <= input$md_threshold, 0, category)) %>%
+      dplyr::mutate(bbox_category = ifelse(conf <= input$md_threshold, "md_empty", bbox_category)) %>%
+      dplyr::group_by(file) %>%
+      dplyr::filter(dplyr::n() == 1 | conf > input$md_threshold) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(x_off = ifelse(conf < input$md_threshold, NA, x_off)) %>%
+      dplyr::mutate(y_off = ifelse(conf < input$md_threshold, NA, y_off)) %>%
+      dplyr::mutate(width = ifelse(conf < input$md_threshold, NA, width)) %>%
+      dplyr::mutate(height = ifelse(conf < input$md_threshold, NA, height)) %>%
+      dplyr::mutate(event_num = 1+cumsum(c(0,diff(as.numeric(datetimeoriginal)))>60*input$event_definition)) %>%
+      dplyr::mutate(event_id = paste0(project_id, "_", deployment, "_", event_num)) %>%
+      dplyr::group_by(event_id) %>%
+      dplyr::mutate(event_cat_num = sum(unique(bbox_category) %in% c("md_animal", "md_vehicle", "md_person"))) %>%
+      dplyr::mutate(event_category = ifelse(event_cat_num == 0, "md_empty",
+                                            ifelse(
+                                              event_cat_num > 1, "md_mixed",
+                                              bbox_category[bbox_category %in% c("md_animal", "md_vehicle", "md_person")][1])                                            )) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(event_category) |>
+      dplyr::summarise("Anzahl Bilder" = dplyr::n(),
+                       "Erstes Bild" = min(datetimeoriginal, na.rm  = TRUE),
+                       "Letztes Bild" = max(datetimeoriginal, na.rm = TRUE)) %>%
+      dplyr::rename(Eventkategorie = event_category)
+  }, options = list(dom = 't'))
+
   # prevent loading deployment if attributes are not specified
   shiny::observe({
     print("toggle action button")
@@ -266,6 +295,10 @@ shinyFFM2_server <- function(input, output, session){
 
 
   #### STATIC INFORMATION ABOUT POSSIBLE CHOICES WHEN UPDATING SELECTIONS
+  shortcuts <- reactive({
+    readr::read_csv2(system.file("shinyFFM2_shortcuts.csv", package = "DMCrAI"))
+  })
+
   choices <- reactive({
     species_table <- readr::read_csv2(system.file("arten.csv", package = "DMCrAI")) %>%
       dplyr::mutate(VernacularName = stringi::stri_trans_general(VernacularName, "Latin-ASCII")) %>%
@@ -275,7 +308,7 @@ shinyFFM2_server <- function(input, output, session){
       classified_by = c(NA, "Schneider, Anja", "Milles, Alexander"),
       species = species_table$VernacularName,
       sex = c("männlich", "weiblich", "unbestimmt", NA),
-      age = c("juvenil", "subadult", "adult", "non-juvenil", "unbestimmt"),
+      age_class = c("juvenil", "subadult", "adult", "non-juvenil", "unbestimmt"),
       behaviour = c("foraging", "resting", "moving", "watching", "other", "unbestimmt", NA),
       project = download_import_megadetector_projects()
     )
@@ -294,10 +327,7 @@ shinyFFM2_server <- function(input, output, session){
   #### HANDLE DOWNLOAD OF MEGADETECTOR OUTPUT
   # download if button in modal is activated
   #TODO: make post-processing a function which can be tested
-
-  #   input <- list(project_id = "test", deployment = "wvb_ff_5034_220809", event_definition = 5, md_categories = "md_animal", md_threshold = 0.6)
-
-
+  #   input <- list(project_id = "Rotwildmanagement", deployment = "wvb_ff_5034_220809", event_definition = 5, md_categories = "md_animal", md_threshold = 0.6)
   shiny::observe({
     md_out$df<-
     download_import_megadetector_bboxes(
@@ -351,7 +381,7 @@ shinyFFM2_server <- function(input, output, session){
   # })
 
 
-  # update selected bounding box based on arrow input
+  # update selected bounding box/image based on arrow input
   shiny::observe({
     if(input$keys == "left") selected_bbox_num(selected_bbox_num() - 1)
     if(input$keys == "right") selected_bbox_num(selected_bbox_num() + 1)
@@ -489,51 +519,21 @@ shinyFFM2_server <- function(input, output, session){
   # }) %>%
   #   shiny::bindEvent(input$keys)
 #
-#   shiny::observe({
-#     #print(input$keys)
-#     if(input$keys == "1"){
-#       shiny::updateSelectInput(session, "species", selected = "Rothirsch", label = "Artname", choices = choices()$species)
-#     }
-#     if(input$keys == "2"){
-#       shiny::updateSelectInput(session, "species", selected = "Reh", label = "Artname", choices = choices()$species)
-#     }
-#     if(input$keys == "3"){
-#       shiny::updateSelectInput(session, "species", selected = "Wildschwein", label = "Artname", choices = choices()$species)
-#     }
-#     if(input$keys == "4"){
-#       shiny::updateSelectInput(session, "species", selected = "Fuchs", label = "Artname", choices = choices()$species)
-#     }
-#     if(input$keys == "5"){
-#       shiny::updateSelectInput(session, "species", selected = "Mensch", label = "Artname", choices = choices()$species)
-#     }
-#
-#     if(input$keys == "g+m"){
-#       shiny::updateSelectInput(session, "sex", "Geschlecht", selected = "männlich", choices = choices()$sex)
-#     }
-#     if(input$keys == "g+w"){
-#       shiny::updateSelectInput(session, "sex", "Geschlecht", selected = "weiblich", choices = choices()$sex)
-#     }
-#     if(input$keys == "g+u"){
-#       shiny::updateSelectInput(session, "sex", "Geschlecht", selected = "unbestimmt", choices = choices()$sex)
-#     }
-#
-#     if(input$keys == "a+j"){
-#       shiny::updateSelectInput(session, "age_class", "Altersklasse", selected = "juvenil", choices = choices()$age)
-#     }
-#     if(input$keys == "a+s"){
-#       shiny::updateSelectInput(session, "age_class", "Altersklasse", selected = "subadult", choices = choices()$age)
-#     }
-#     if(input$keys == "a+d"){
-#       shiny::updateSelectInput(session, "age_class", "Altersklasse", selected = "adult", choices = choices()$age)
-#     }
-#     if(input$keys == "a+n"){
-#       shiny::updateSelectInput(session, "age_class", "Altersklasse", selected = "non-juvenil", choices = choices()$age)
-#     }
-#     if(input$keys == "a+o"){
-#       shiny::updateSelectInput(session, "age_class", "Altersklasse", selected = "unbestimmt", choices = choices()$age)
-#     }
-#   }) %>%
-#     shiny::bindEvent(input$keys)
+
+  # Handle key inputs to update select input for image attributes
+  shiny::observe({
+    if(input$keys %in% shortcuts()$shortcut){
+      shortcut <- shortcuts() |>
+        dplyr::filter(shortcut == input$keys)
+
+      shiny::updateSelectInput(session,
+                               inputId =  shortcut$id,
+                               selected = shortcut$selected,
+                               label = shortcut$label,
+                               choices = choices()[[shortcut$id]])
+    }
+  }) %>%
+    shiny::bindEvent(input$keys)
 #
 #   shiny::observe({
 #     if(input$keys %in% c("space", "left", "right")){
@@ -554,7 +554,7 @@ shinyFFM2_server <- function(input, output, session){
 #       if(selected_bbox$md_out$bbox_category != "md_animal"){
 #         print("Updating inputs")
 #         shiny::updateSelectInput(session, "sex", "Geschlecht", selected = "unbestimmt", choices = choices()$sex)
-#         shiny::updateSelectInput(session, "age_class", "Altersklasse", selected = "unbestimmt", choices = choices()$age)
+#         shiny::updateSelectInput(session, "age_class", "Altersklasse", selected = "unbestimmt", choices = choices()$age_class)
 #         shiny::updateSelectInput(session, "behaviour", "Verhalten", selected = "unbestimmt", choices = choices()$behaviour)
 #         shiny::updateTextInput(session, "id_of_animal", "ID-Merkmal", value = NA)
 #
@@ -671,6 +671,7 @@ shinyFFM2_server <- function(input, output, session){
     DT::replaceData(proxyTable, myTable, resetPaging = FALSE)
     values$tab <- myTable
   })
+
   observeEvent(input$add2event, {
     buttonCounter <<- buttonCounter + 1L
     myTable <- shiny::isolate(values$tab)
@@ -692,9 +693,11 @@ shinyFFM2_server <- function(input, output, session){
   })
 
 
-  # selected_bbox_num_adjust <- function() 19
+
+  # data.table with bounding box
   output$md_table <- shiny::renderTable({
     shiny::req(selected_bbox_num_adjust())
+    print(md_out$df)
     rows <- (selected_bbox_num_adjust() - 2) : (selected_bbox_num_adjust() + 2) %% nrow(md_out$df)
     rows[rows == 0] <- nrow(md_out$df)
 

@@ -2,7 +2,7 @@
 #'
 #'
 #'
-runShinyFFM2 <- function(...){
+runShinyFFM2 <- function(){
 
   species_table <- readr::read_csv2(system.file("arten.csv", package = "DMCrAI")) %>%
     dplyr::mutate(VernacularName = stringi::stri_trans_general(VernacularName, "Latin-ASCII")) %>%
@@ -20,5 +20,5 @@ runShinyFFM2 <- function(...){
 
   options(DT.options = list(pageLength = 5))
   Sys.setenv(TZ='UTC')
-  shiny::shinyApp(shinyFFM2_ui(choices, species_table), shinyFFM2_server, options = list("launch.browser" = TRUE), ...)
+  shiny::shinyApp(shinyFFM2_ui(choices, species_table), shinyFFM2_server, options = list("launch.browser" = TRUE))
 }

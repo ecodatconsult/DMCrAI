@@ -38,14 +38,15 @@ ffm2_event_images <- function(md_out, event_num_selected, scale_factor = .2){
 #     lapply(magick::image_frame, color = "white", geometry = "10x10+3+3") %>%
 #     do.call(what = c)
 #
+
+
   md_out$df %>%
     dplyr::filter(event_num == event_num_selected) %>%
     dplyr::filter(!duplicated(file_id)) %>%
     dplyr::pull(file) %>%
-    sapply(magick::image_read) %>%
-    lapply(magick::image_resize, geometry = magick::geometry_size_percent(width = 100 * scale_factor)) %>%
-    lapply(magick::image_frame, color = "white", geometry = "10x10+3+3") %>%
-    do.call(what = c)
+    magick::image_read() |>
+    magick::image_join() |>
+    magick::image_resize(geometry = magick::geometry_size_percent(width = 100 * .15))
 }
 
 

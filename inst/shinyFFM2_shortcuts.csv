@@ -1,0 +1,14 @@
+﻿shortcut;id;label;selected;selected_database
+1;species;Artname;Rothirsch;Cervus elaphus
+2;species;Artname;Reh;Capreolus capreolus
+3;species;Artname;Wildschwein;Sus scrofa
+4;species;Artname;Fuchs;Vulpes vulpes
+5;species;Artname;Mensch;Homo sapiens
+g+m;sex;Geschlecht;männlich;male
+g+w;sex;Geschlecht;weiblich;female
+g+u;sex;Geschlecht;unbestimmt;unknown
+a+j;age_class;Altersklasse;juvenil;juvenile
+a+s;age_class;Altersklasse;subadult;subadult
+a+d;age_class;Altersklasse;adult;adult
+a+n;age_class;Altersklasse;non-juvenil;non-juvenile
+a+o;age_class;Altersklasse;unbestimmt;unknown
