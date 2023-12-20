@@ -1,5 +1,8 @@
 shinyFFM2_ui <- function(choices, species_table, ...){
   ui <- shiny::fluidPage(
+
+    theme =  shinythemes::shinytheme("sandstone"),
+    shiny::titlePanel("ShinyFFM", "ShinyFFM"),
     keys::useKeys(),
     keys::keysInput("keys", c("left", "right", "space",
                               "pagedown", "pageup", "del",
@@ -133,7 +136,8 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                             ),
 
                             shiny::fluidRow(
-                              shiny::column(2),
+                              shiny::column(1),
+                              shiny::column(1, shiny::actionButton(inputId = "left_event", label = "Vorheriges Event", icon = shiny::icon("backward-fast"), width = "100%")),
                               shiny::column(1, shiny::actionButton(inputId = "left", label = "Vorherige Box", icon = shiny::icon("arrow-left"), width = "100%")),
                               shiny::column(1, shiny::selectInput("species", "Artname", choices = choices$species)),
                               shiny::column(1, shiny::numericInput("count", "Anzahl [nur Event]", 1, min = 1, step = 1)),
@@ -143,8 +147,9 @@ shinyFFM2_ui <- function(choices, species_table, ...){
                               shiny::column(1, shiny::selectInput("behaviour", "Verhalten", choices = choices$behaviour)),
                               shiny::column(1, shiny::textInput("id_of_animal", "ID-Merkmal", value = NA)),
                               shiny::column(1, shiny::textInput("notes", "Bemerkungen", value = NA)),
-                              shiny::column(1, shiny::actionButton(inputId = "right", label = "Nächste Box", icon = shiny::icon("arrow-right"), width = "100%")),
-                              shiny::column(2)),
+                              shiny::column(1, fluidRow(shiny::actionButton(inputId = "right", label = "Nächste Box", icon = shiny::icon("arrow-right"), width = "100%"))),
+                              shiny::column(1, shiny::actionButton(inputId = "right_event", label = "Nächstes Event", icon = shiny::icon("forward-fast"), width = "100%")),
+                              shiny::column(1)),
                             shiny::fluidRow(
                               shiny::column(2),
                               shiny::column(4, shiny::actionButton(inputId = "add2event", "Event: Klassifizierung hinzufügen (Leerzeichen)", icon = shiny::icon("circle-check"), width = "100%")),

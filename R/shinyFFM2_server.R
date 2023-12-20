@@ -407,6 +407,23 @@ shinyFFM2_server <- function(input, output, session){
 
   shiny::observe({selected_bbox_num(selected_bbox_num() + 1)}) %>%
     shiny::bindEvent(input$right)
+
+  #TODO allow fast switch between events
+  # shiny::observe({
+  #   if(input$keys %in% c("pageup", "pagedown")){
+  #     event_pos_df <- md_out$df %>%
+  #       dplyr::mutate(row_num = seq(dplyr::n())) %>%
+  #       dplyr::filter(!duplicated(event_num) | row_num == selected_bbox_num_adjust()) %>%
+  #       dplyr::select(row_num, event_num)
+  #     if(input$keys == "pagedown"){
+  #       event_pos_df
+  #     }else{
+  #
+  #     }
+  #   }
+  # }) %>%
+  #   shiny::bindEvent(input$keys)
+  #
   #
   # shiny::observe({
   #   selected_bbox$md_out$species = input$species
@@ -672,6 +689,7 @@ shinyFFM2_server <- function(input, output, session){
     values$tab <- myTable
   })
 
+  # add entries to event table if keys is pressed or button is clicked
   observeEvent(input$add2event, {
     buttonCounter <<- buttonCounter + 1L
     myTable <- shiny::isolate(values$tab)
@@ -691,6 +709,30 @@ shinyFFM2_server <- function(input, output, session){
     DT::replaceData(proxyTable, myTable, resetPaging = FALSE)
     values$tab <- myTable
   })
+
+  shiny::observe({
+    if(input$keys == "space"){
+    buttonCounter <<- buttonCounter + 1L
+    myTable <- shiny::isolate(values$tab)
+    myTable <- dplyr::bind_rows(
+      myTable,
+      dplyr::tibble(
+        EventNr = selected_bbox$md_out$event_num,
+        Art = input$species,
+        Anzahl = input$count,
+        Geschlecht = input$sex,
+        Alter = input$age_class,
+        Verhalten = input$behaviour,
+        ID_Merkmal = input$id_of_animal,
+        Bemerkungen = input$notes) %>%
+        dplyr::mutate(id = buttonCounter,
+                      Remove = getRemoveButton(buttonCounter, idS = "", lab = "Tab1")))
+    DT::replaceData(proxyTable, myTable, resetPaging = FALSE)
+    values$tab <- myTable
+    }
+  }) %>%
+    shiny::bindEvent(input$keys)
+
 
 
 
