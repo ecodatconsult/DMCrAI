@@ -77,18 +77,23 @@ shinyDMCrAI2_server <- function(input, output, session) {
 
   # generate batch script and run megadetector
   shiny::observe({
+
+    bat_loc <- switch(Sys.info()[['sysname']],
+           Linux =  here::here("shiny_md.sh"),
+           Windows = here::here("shiny_md.bat"),
+           Darwin = here::here("shiny_md.sh"))
+
     with(read.csv(system.file("md.csv", package = "DMCrAI")),
-         create_md_bat(pics_dir = md_dir(), md_out = md_dir(), py_scripts_loc = py_scripts_loc, md_model_loc = md_model_loc, bat_loc = "shiny_md.bat", run_info = FALSE, force.overwrite = FALSE, checkpoint_freq = -1, show_finish = TRUE))
+         create_md_bat(pics_dir = md_dir(), md_out = md_dir(), py_scripts_loc = py_scripts_loc, md_model_loc = md_model_loc, bat_loc, run_info = FALSE, force.overwrite = FALSE, checkpoint_freq = -1, show_finish = TRUE))
 
     if(is.null(start_time())) start_time(Sys.time())
     shiny::showNotification(paste0(lubridate::now(), ": Starte Megadetector"), duration = NULL)
     shiny::updateActionButton(session = session, inputId = "runMD", label = "Megadetector läuft", icon = icon("mug-hot"))
 
     switch(Sys.info()[['sysname']],
-           Linux = here::here("test.sh"),
-           Windows = shell.exec("shiny_md.bat"),
-           Darwin = here::here("test.sh"))
-
+           Linux = system(paste0("gnome-terminal -- bash ", bat_loc), wait = FALSE, intern = FALSE),
+           Windows = shell.exec(bat_loc),
+           Darwin = system(paste0("gnome-terminal -- bash ", bat_loc ), wait = FALSE, intern = FALSE))
 
   }) %>%
     shiny::bindEvent(input$runMD)

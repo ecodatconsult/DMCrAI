@@ -13,16 +13,32 @@
 
 
 exif_image_info <- function(md_dir = here::here(), info_out = tempfile("out", tmpdir = here::here(), fileext = ".txt"), optional_tags = NULL){
-
   tags <- paste0("-filepath -datetimeoriginal ")
 
   if(!is.null(optional_tags)) tags <- paste0(tags, optional_tags, " ")
 
-  cmd <- paste0('"',system.file("exiftool.exe", package = "DMCrAI"),'"', " -T -r ", tags, '"', md_dir,'"' ," > ", '"', normalizePath(info_out, mustWork = FALSE), '"')
+  exif_init <- switch(Sys.info()[['sysname']],
+                         Linux =  "exiftool",
+                         Windows = paste0('"',system.file("exiftool.exe", package = "DMCrAI"),'"'),
+                         Darwin = stop("Darwin OS not implemented yet"))
 
-  temp_bat <- tempfile("run_exif", tmpdir = here::here(), fileext = ".bat")
+
+  cmd <- paste0(exif_init, " -T -r ", tags, '"', md_dir,'"' ," > ", '"', normalizePath(info_out, mustWork = FALSE), '"')
+
+  temp_bat_ext <- switch(Sys.info()[['sysname']],
+                    Linux =  ".sh",
+                    Windows = ".bat",
+                    Darwin = ".sh")
+
+  temp_bat <- tempfile("run_exif", tmpdir = here::here(), fileext = temp_bat_ext)
   write(cmd, temp_bat)
-  shell(temp_bat)
+
+
+  switch(Sys.info()[['sysname']],
+         Linux =  system(paste0("bash ", temp_bat)),
+         Windows = shell(temp_bat),
+         Darwin = stop("Darwin OS not implemented yet"))
+
   file.remove(temp_bat)
 
   img_info <- read.delim(normalizePath(info_out))
