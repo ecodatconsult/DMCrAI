@@ -7,8 +7,22 @@
 #' @export
 
 setup_md <- function(test_md = TRUE,
-                     md_model_loc = choose.files(caption = "select MD-model file, e.g. md_v5a.0.0.pt", multi = FALSE),
-                     py_scripts_loc = choose.dir(caption = "select directory where ai4eutils, cameratraps and yolov5 are located - path may not contain blanks!")){
+                     md_model_loc = NULL,
+                     py_scripts_loc = NULL){
+
+  if(is.null(md_model_loc)){
+    md_model_loc = switch(Sys.info()[['sysname']],
+                          Linux = tcltk::tk_choose.files(caption =  "select MD-model file, e.g. md_v5a.0.0.pt", multi = FALSE),
+                          Windows = utils::choose.files(caption = "select MD-model file, e.g. md_v5a.0.0.pt", multi = FALSE),
+                          Darwin =  tcltk::tk_choose.files(caption =  "select MD-model file, e.g. md_v5a.0.0.pt", multi = FALSE))
+  }
+
+  if(is.null(py_scripts_loc)){
+    py_scripts_loc = switch(Sys.info()[['sysname']],
+                          Linux = tcltk::tk_choose.dir(caption =  "select directory where ai4eutils, cameratraps and yolov5 are located - path may not contain blanks!"),
+                          Windows = utils::choose.dir(caption = "select directory where ai4eutils, cameratraps and yolov5 are located - path may not contain blanks!"),
+                          Darwin =  tcltk::tk_choose.dir(caption =  "select directory where ai4eutils, cameratraps and yolov5 are located - path may not contain blanks!"))
+  }
 
   if(stringr::str_detect(py_scripts_loc, " ")){
     message("Path to Python scripts contains blanks, this may result in errors!")

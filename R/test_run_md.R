@@ -8,15 +8,19 @@ test_run_md <- function(){
     test <- read.csv(system.file("md.csv", package = "DMCrAI"))
     test$pics_dir <- system.file("test_data/wvb_ff_5034_220809", package = "DMCrAI")
 
+    bat_loc <- switch(Sys.info()[['sysname']],
+      Linux = here::here("test.sh"),
+      Windows = here::here("test.bat"),
+      Darwin = here::here("test.sh"))
+
     with(test, {
-      create_md_bat(pics_dir = pics_dir, md_out = pics_dir, py_scripts_loc = py_scripts_loc, md_model_loc = md_model_loc, force.overwrite = TRUE, bat_loc = "test.bat", run_info = TRUE, checkpoint_freq = -1)
+      create_md_bat(pics_dir = pics_dir, md_out = pics_dir, py_scripts_loc = py_scripts_loc, md_model_loc = md_model_loc, force.overwrite = TRUE, bat_loc = bat_loc, run_info = TRUE, checkpoint_freq = -1)
     })
 
-    system("test.bat")
-
-    info <- as.numeric(strsplit(tail(readLines("run_info.txt"), 3)[1], " ")[[1]][c(4,7)])
-
-    write.csv(data.frame(performance = info[1]/(info[2] - 4.6)), paste0(system.file(package = "DMCrAI"), "/performance.csv"))
+    switch(Sys.info()[['sysname']],
+           Linux = system(paste0("bash ", bat_loc)),
+           Windows = system(bat_loc),
+           Darwin = system(paste0("bash ", bat_loc)))
 
     detection_finished <- "md_out.json" %in% list.files(test$pics_dir)
 
@@ -34,8 +38,7 @@ test_run_md <- function(){
     }
 
     file.remove(list.files(test$pics_dir, pattern = "md_out.json", full.names = TRUE))
-    file.remove("test.bat")
-    file.remove("run_info.txt")
+    file.remove(bat_loc)
   }else{
     detection_finished <- FALSE
     message("Run DMCrAI::setup_md() first to specify location of megadetector model and python scripts!")

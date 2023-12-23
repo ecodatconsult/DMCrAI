@@ -83,7 +83,13 @@ shinyDMCrAI2_server <- function(input, output, session) {
     if(is.null(start_time())) start_time(Sys.time())
     shiny::showNotification(paste0(lubridate::now(), ": Starte Megadetector"), duration = NULL)
     shiny::updateActionButton(session = session, inputId = "runMD", label = "Megadetector läuft", icon = icon("mug-hot"))
-    shell.exec("shiny_md.bat")
+
+    switch(Sys.info()[['sysname']],
+           Linux = here::here("test.sh"),
+           Windows = shell.exec("shiny_md.bat"),
+           Darwin = here::here("test.sh"))
+
+
   }) %>%
     shiny::bindEvent(input$runMD)
 
