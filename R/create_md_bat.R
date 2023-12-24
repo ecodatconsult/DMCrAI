@@ -22,7 +22,7 @@ create_md_bat <- function(pics_dir,
                           show_finish = TRUE){
 
   if(Sys.info()[['sysname']] == "Linux"){
-    if(file.exists(paste0(md_out,'\\md_out.json'))){
+    if(file.exists(paste0(md_out,'/md_out.json'))){
       backup_time <- strftime(lubridate::now(), format = "%y%m%d_%H%M%S")
       file.copy(paste0(md_out,'/md_out.json'), paste0(md_out,'/', backup_time, '_backup_md_out.json'))
     }
