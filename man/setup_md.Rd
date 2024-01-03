@@ -4,13 +4,7 @@
 \alias{setup_md}
 \title{Setze die Pfade für die Ausführung von Megadetector}
 \usage{
-setup_md(
-  test_md = TRUE,
-  md_model_loc = choose.files(caption = "select MD-model file, e.g. md_v5a.0.0.pt", multi
-    = FALSE),
-  py_scripts_loc = choose.dir(caption =
-    "select directory where ai4eutils, cameratraps and yolov5 are located - path may not contain blanks!")
-)
+setup_md(test_md = TRUE, md_model_loc = NULL, py_scripts_loc = NULL)
 }
 \arguments{
 \item{test_md}{boolean, gibt an, ob nach dem Setzen der Pfade ein Testlauf durchgeführt werden soll}

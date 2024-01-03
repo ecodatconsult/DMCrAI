@@ -1,0 +1,1834 @@
+{
+ "images": [
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00103a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00546,
+     "bbox": [
+      0.197,
+      0,
+      0.6444,
+      0.9375
+     ]
+    },
+    {
+     "category": "2",
+     "conf": 0.00757,
+     "bbox": [
+      0.3337,
+      0.9,
+      0.1027,
+      0.05624
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0538,
+     "bbox": [
+      0.3276,
+      0.002083,
+      0.2406,
+      0.9354
+     ]
+    },
+    {
+     "category": "2",
+     "conf": 0.0564,
+     "bbox": [
+      0.3264,
+      0,
+      0.2382,
+      0.9458
+     ]
+    },
+    {
+     "category": "2",
+     "conf": 0.224,
+     "bbox": [
+      0.3325,
+      0.9,
+      0.2466,
+      0.05833
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00109a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00695,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9104
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00109b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00647,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9104
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00109c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0069,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9104
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00110a.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00110b.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00110c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0174,
+     "bbox": [
+      0.545,
+      0.4525,
+      0.02484,
+      0.07286
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00111a.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00111b.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00111c.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00112a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0074,
+     "bbox": [
+      0,
+      0.2159,
+      0.1428,
+      0.7366
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00112b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00642,
+     "bbox": [
+      0,
+      0.2566,
+      0.06094,
+      0.1798
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.00831,
+     "bbox": [
+      0.5454,
+      0.4512,
+      0.02406,
+      0.06684
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00112c.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00113a.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00113b.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00113c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00885,
+     "bbox": [
+      0.05357,
+      0.7814,
+      0.05706,
+      0.1062
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0121,
+     "bbox": [
+      0.543,
+      0.4512,
+      0.02562,
+      0.07085
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00114a.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00114b.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00114c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00774,
+     "bbox": [
+      0.5353,
+      0.4525,
+      0.03299,
+      0.06684
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00115a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0208,
+     "bbox": [
+      0.5411,
+      0.4458,
+      0.03183,
+      0.07419
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.888,
+     "bbox": [
+      0.6308,
+      0.2513,
+      0.243,
+      0.2446
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00115b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.912,
+     "bbox": [
+      0.5209,
+      0.3201,
+      0.2239,
+      0.1991
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00115c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00861,
+     "bbox": [
+      0.4099,
+      0.4077,
+      0.04309,
+      0.08355
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0109,
+     "bbox": [
+      0.5302,
+      0.3622,
+      0.09899,
+      0.1617
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.877,
+     "bbox": [
+      0.4103,
+      0.3489,
+      0.2193,
+      0.1945
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00116a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.941,
+     "bbox": [
+      0.7569,
+      0.3963,
+      0.1886,
+      0.4084
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00116b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.9,
+     "bbox": [
+      0.8769,
+      0.4251,
+      0.1156,
+      0.278
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00116c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.927,
+     "bbox": [
+      0.8784,
+      0.4177,
+      0.1071,
+      0.3061
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00117a.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00117b.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00117c.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00118a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0109,
+     "bbox": [
+      0.5403,
+      0.385,
+      0.03687,
+      0.1256
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0223,
+     "bbox": [
+      0.4961,
+      0.385,
+      0.05318,
+      0.08689
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0774,
+     "bbox": [
+      0.4972,
+      0.381,
+      0.0788,
+      0.1283
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.903,
+     "bbox": [
+      0.3862,
+      0.407,
+      0.1416,
+      0.1978
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00118b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00825,
+     "bbox": [
+      0.5504,
+      0.4398,
+      0.02523,
+      0.06417
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0118,
+     "bbox": [
+      0.5372,
+      0.3709,
+      0.0392,
+      0.133
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.882,
+     "bbox": [
+      0.4083,
+      0.4057,
+      0.1048,
+      0.2139
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00118c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0594,
+     "bbox": [
+      0.5357,
+      0.383,
+      0.04114,
+      0.129
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.339,
+     "bbox": [
+      0.4895,
+      0.3776,
+      0.08695,
+      0.1356
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.92,
+     "bbox": [
+      0.4056,
+      0.407,
+      0.1362,
+      0.2072
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00119a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.891,
+     "bbox": [
+      0.5034,
+      0.3148,
+      0.3097,
+      0.2887
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00119b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.922,
+     "bbox": [
+      0.6413,
+      0.3088,
+      0.2989,
+      0.3288
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00119c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.886,
+     "bbox": [
+      0.7577,
+      0.276,
+      0.2418,
+      0.3622
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00120a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0156,
+     "bbox": [
+      0.5493,
+      0.4425,
+      0.02639,
+      0.08088
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00120b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00739,
+     "bbox": [
+      0.5454,
+      0.4311,
+      0.03027,
+      0.09024
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0115,
+     "bbox": [
+      0.5298,
+      0.3582,
+      0.04736,
+      0.161
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00120c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0325,
+     "bbox": [
+      0.5512,
+      0.4431,
+      0.02445,
+      0.0762
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00121a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00805,
+     "bbox": [
+      0.939,
+      0.3302,
+      0.06094,
+      0.2112
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.626,
+     "bbox": [
+      0.9394,
+      0.4211,
+      0.06055,
+      0.1885
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00121b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.922,
+     "bbox": [
+      0.8175,
+      0.3943,
+      0.1809,
+      0.28
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00121c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.95,
+     "bbox": [
+      0.7076,
+      0.4391,
+      0.2034,
+      0.3168
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00122a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.966,
+     "bbox": [
+      0.479,
+      0.5334,
+      0.2294,
+      0.3803
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00122b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.968,
+     "bbox": [
+      0.2911,
+      0.6096,
+      0.2795,
+      0.3469
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00122c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.971,
+     "bbox": [
+      0.1424,
+      0.6844,
+      0.333,
+      0.2713
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00123a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00722,
+     "bbox": [
+      0.8746,
+      0.3997,
+      0.03687,
+      0.06617
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0147,
+     "bbox": [
+      0.552,
+      0.4438,
+      0.02445,
+      0.05681
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.714,
+     "bbox": [
+      0.9285,
+      0.4244,
+      0.07142,
+      0.2827
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00123b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0122,
+     "bbox": [
+      0.8548,
+      0.3689,
+      0.06521,
+      0.1256
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0212,
+     "bbox": [
+      0.5508,
+      0.4451,
+      0.026,
+      0.05481
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.11,
+     "bbox": [
+      0.8757,
+      0.3054,
+      0.1242,
+      0.1824
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.791,
+     "bbox": [
+      0.8552,
+      0.4171,
+      0.1447,
+      0.28
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00123c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0287,
+     "bbox": [
+      0.2635,
+      0.389,
+      0.05279,
+      0.141
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0403,
+     "bbox": [
+      0.8633,
+      0.395,
+      0.04619,
+      0.0782
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.964,
+     "bbox": [
+      0.7791,
+      0.4124,
+      0.2208,
+      0.3489
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00124a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00819,
+     "bbox": [
+      0.545,
+      0.4451,
+      0.03299,
+      0.05681
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.958,
+     "bbox": [
+      0.625,
+      0.4545,
+      0.3229,
+      0.3302
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00124b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.955,
+     "bbox": [
+      0.625,
+      0.4224,
+      0.321,
+      0.3609
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00124c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.957,
+     "bbox": [
+      0.6261,
+      0.4632,
+      0.3206,
+      0.3195
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00125a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.938,
+     "bbox": [
+      0.2729,
+      0.5822,
+      0.2958,
+      0.2613
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00125b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.923,
+     "bbox": [
+      0.2651,
+      0.5487,
+      0.243,
+      0.2907
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00125c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.914,
+     "bbox": [
+      0.2651,
+      0.5494,
+      0.243,
+      0.2854
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00126a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0682,
+     "bbox": [
+      0.5524,
+      0.4465,
+      0.02523,
+      0.05548
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.9,
+     "bbox": [
+      0.0003881,
+      0.4157,
+      0.1257,
+      0.3435
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00126b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00658,
+     "bbox": [
+      0.5489,
+      0.4485,
+      0.02833,
+      0.06149
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.927,
+     "bbox": [
+      0,
+      0.4398,
+      0.1199,
+      0.3208
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00126c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.147,
+     "bbox": [
+      0.5477,
+      0.4465,
+      0.02989,
+      0.05614
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.913,
+     "bbox": [
+      0,
+      0.4338,
+      0.118,
+      0.3135
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00127a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.956,
+     "bbox": [
+      0,
+      0.3455,
+      0.2387,
+      0.401
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00127b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0781,
+     "bbox": [
+      0.5496,
+      0.4512,
+      0.02678,
+      0.04812
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.955,
+     "bbox": [
+      0.0007763,
+      0.3796,
+      0.2216,
+      0.3649
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00127c.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00637,
+     "bbox": [
+      0.5248,
+      0.4364,
+      0.05201,
+      0.06751
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0955,
+     "bbox": [
+      0.5504,
+      0.4478,
+      0.02678,
+      0.05213
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.952,
+     "bbox": [
+      0.006211,
+      0.409,
+      0.2104,
+      0.3335
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00128a.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0214,
+     "bbox": [
+      0.5469,
+      0.4458,
+      0.03066,
+      0.05681
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.705,
+     "bbox": [
+      0,
+      0.5173,
+      0.1028,
+      0.1504
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.964,
+     "bbox": [
+      0.09083,
+      0.2219,
+      0.2604,
+      0.5187
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00128b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.907,
+     "bbox": [
+      0,
+      0.4866,
+      0.1486,
+      0.1557
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.964,
+     "bbox": [
+      0.189,
+      0.1697,
+      0.3187,
+      0.5828
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/RWGBW_19317_220524/I_00143b.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0232,
+     "bbox": [
+      0.9941,
+      0.766,
+      0.005822,
+      0.1229
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090001.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.025,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9354
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090002.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0197,
+     "bbox": [
+      0,
+      0,
+      0.9988,
+      0.9416
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090003.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.019,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9395
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090004.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0801,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9395
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090005.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0962,
+     "bbox": [
+      0,
+      0,
+      0.9988,
+      0.9437
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090006.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0494,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9416
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090007.JPG",
+   "detections": [
+    {
+     "category": "2",
+     "conf": 0.0155,
+     "bbox": [
+      0.8159,
+      0,
+      0.184,
+      0.85
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.114,
+     "bbox": [
+      0,
+      0,
+      0.9988,
+      0.9062
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090008.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0277,
+     "bbox": [
+      0,
+      0,
+      0.6459,
+      0.9208
+     ]
+    },
+    {
+     "category": "2",
+     "conf": 0.0666,
+     "bbox": [
+      0.3985,
+      0,
+      0.245,
+      0.8
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0895,
+     "bbox": [
+      0.3962,
+      0.008333,
+      0.2485,
+      0.8312
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090009.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0513,
+     "bbox": [
+      0.1629,
+      0,
+      0.8358,
+      0.9041
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090010.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0869,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9145
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090011.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0852,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9104
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08090012.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.104,
+     "bbox": [
+      0,
+      0,
+      1.0,
+      0.9125
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08140043.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00903,
+     "bbox": [
+      0.01588,
+      0,
+      0.9348,
+      0.9513
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0107,
+     "bbox": [
+      0.7268,
+      0.3981,
+      0.01432,
+      0.05092
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.964,
+     "bbox": [
+      0,
+      0.00324,
+      0.3101,
+      0.9453
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08140044.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0396,
+     "bbox": [
+      0.7265,
+      0.3962,
+      0.0138,
+      0.05324
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0478,
+     "bbox": [
+      0.3427,
+      0.4402,
+      0.02213,
+      0.04907
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08140045.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0473,
+     "bbox": [
+      0.3424,
+      0.4407,
+      0.02265,
+      0.05416
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0964,
+     "bbox": [
+      0.7265,
+      0.3972,
+      0.0138,
+      0.05277
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08140046.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.978,
+     "bbox": [
+      0.2679,
+      0.3916,
+      0.2593,
+      0.3375
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08140047.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.971,
+     "bbox": [
+      0.5265,
+      0.4046,
+      0.3015,
+      0.2689
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08140048.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.934,
+     "bbox": [
+      0.7434,
+      0.3652,
+      0.2565,
+      0.2981
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08150061.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08150062.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08150063.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160070.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.966,
+     "bbox": [
+      0.8445,
+      0.4212,
+      0.1554,
+      0.3069
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160071.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.972,
+     "bbox": [
+      0.714,
+      0.4245,
+      0.2859,
+      0.2962
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160072.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.969,
+     "bbox": [
+      0.5955,
+      0.3777,
+      0.3302,
+      0.3643
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160073.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160074.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0057,
+     "bbox": [
+      0.5239,
+      0.412,
+      0.03359,
+      0.08194
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0124,
+     "bbox": [
+      0.5226,
+      0.4101,
+      0.0164,
+      0.03472
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160075.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00605,
+     "bbox": [
+      0.5265,
+      0.4157,
+      0.03515,
+      0.08287
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160076.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.967,
+     "bbox": [
+      0.7661,
+      0.3625,
+      0.1776,
+      0.2361
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160077.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.965,
+     "bbox": [
+      0.7653,
+      0.3638,
+      0.1789,
+      0.2402
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160078.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.962,
+     "bbox": [
+      0.7619,
+      0.3657,
+      0.1802,
+      0.2365
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160079.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.949,
+     "bbox": [
+      0.7109,
+      0.3662,
+      0.2046,
+      0.2282
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160080.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.971,
+     "bbox": [
+      0.6666,
+      0.3629,
+      0.2018,
+      0.2217
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160081.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.952,
+     "bbox": [
+      0.6429,
+      0.3606,
+      0.1669,
+      0.2407
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160082.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.965,
+     "bbox": [
+      0.2479,
+      0.3736,
+      0.1749,
+      0.2398
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160083.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.925,
+     "bbox": [
+      0.2742,
+      0.3773,
+      0.107,
+      0.2277
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08160084.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.0263,
+     "bbox": [
+      0.5223,
+      0.4087,
+      0.0164,
+      0.03703
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.748,
+     "bbox": [
+      0.2723,
+      0.3722,
+      0.04791,
+      0.137
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08170085.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08170086.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08170087.JPG",
+   "detections": []
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08190106.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.895,
+     "bbox": [
+      0.05937,
+      0.3699,
+      0.1447,
+      0.1629
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08190107.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.00596,
+     "bbox": [
+      0.03854,
+      0.3356,
+      0.02812,
+      0.04814
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.0111,
+     "bbox": [
+      0.03333,
+      0.3342,
+      0.03932,
+      0.08194
+     ]
+    },
+    {
+     "category": "1",
+     "conf": 0.889,
+     "bbox": [
+      0.025,
+      0.3787,
+      0.138,
+      0.1712
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08190108.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.85,
+     "bbox": [
+      0.004427,
+      0.3796,
+      0.1552,
+      0.162
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/08220121.JPG",
+   "detections": [
+    {
+     "category": "1",
+     "conf": 0.895,
+     "bbox": [
+      0.7497,
+      0.4101,
+      0.1307,
+      0.112
+     ]
+    }
+   ]
+  },
+  {
+   "file": "/home/alex/Documents/Projekte/FotofallenApp/DMCrAI/inst/test_data/wvb_ff_5034_220809/09090258.JPG",
+   "detections": [
+    {
+     "category": "2",
+     "conf": 0.954,
+     "bbox": [
+      0.001041,
+      0.0004629,
+      0.9505,
+      0.9481
+     ]
+    }
+   ]
+  }
+ ],
+ "detection_categories": {
+  "1": "animal",
+  "2": "person",
+  "3": "vehicle"
+ },
+ "info": {
+  "detection_completion_time": "2023-12-23 19:17:17",
+  "format_version": "1.3",
+  "detector": "md_v5a.0.0.pt",
+  "detector_metadata": {
+   "megadetector_version": "v5a.0.0",
+   "typical_detection_threshold": 0.2,
+   "conservative_detection_threshold": 0.05
+  }
+ }
+}
