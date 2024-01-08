@@ -1,6 +1,6 @@
 #' @export
 #'
-shinyDMCrAI2_server <- function(input, output, session) {
+shinyDMCrAI_server <- function(input, output, session) {
   ##### SIDEBAR PANEL -- SET DIRECTORY AND PROVIDE INITIAL INFO #####
 
 
@@ -163,47 +163,174 @@ shinyDMCrAI2_server <- function(input, output, session) {
     shiny::bindEvent(curr_time())
 
 
+
   ##########################################
-  #####  STEP 2 - BLUR IMAGES & UPLOAD #####
+  #####  STEP 2 - PROJECT INFO         #####
   ##########################################
 
-  projectModal <- function(){
-    shiny::modalDialog(
-      shiny::textInput("project_id_text",
-                "Wähle eine Projektbezeichnung",
-                placeholder = 'Bspw. "Rotwildmanagement" or "Grünbrückenmonitoring"'
-      ),
-
-      footer = tagList(
-        shiny::modalButton("Cancel"),
-        shiny::actionButton("project_id_accept", "OK")
-      )
-    )
-  }
-
+  # A modal opens once the input$accept button is clicked
   shiny::observeEvent(input$accept, {
     shiny::showModal(projectModal())
   })
 
 
+  # Modal to enter or edit project information in core.projects
+  projectModal <- function(){
+    shiny::modalDialog(
+      fluidRow(
+        column(8,
+               shiny::selectInput("project_id_db", "Projekt aus der Datenbank auswählen", choices = db_download(selection = "name", schema = "core", table = "projects") |> dplyr::pull())
+               ),
+        shiny::actionButton("download_project_db", "Download Projektdaten", icon = shiny::icon("download")),
+        shiny::actionButton("download_project_new", "", icon = shiny::icon("plus"))
+        ),
+      shiny::conditionalPanel(condition = "input.download_project_db | input.download_project_new",
+      h3("Neues Projekt hinzufügen bzw. Eingabe überprüfen"),
+      fluidRow(column(4,
+                      shiny::textInput(inputId = "project_id_name_short",
+                                      label= "Kurzbezeichnung",
+                                     placeholder = 'Kurzname wie "Rotwildmanagement"')
+                      ),
+               column(4,
+                      shiny::textInput(inputId = "project_id_name",label =
+                                       "Vollständige Bezeichnung",
+                                       placeholder = 'Vollständiger Projektname')
+               ),
+               column(4,
+                      shiny::textInput(inputId = "project_id_contact",label =
+                                       "Kontaktperson",
+                                       placeholder = 'vorname.name@mail.de')
+               )),
+               fluidRow(column(12,
+                      shiny::textInput(inputId = "project_id_description",label =
+                                       "Projektbeschreibung",
+                                       placeholder = 'Kurze Beschreibung des Projekts', width = "100%")
+                      )
+               )),
+      footer = tagList(
+        shiny::modalButton("Abbrechen"),
+        shinyBS::bsButton(
+          "project_id_accept",
+          "Projektdaten übernehmen & abspeichern",
+          icon = shiny::icon("upload"),
+          size = "large",
+          type = "action",
+          block = TRUE,
+          disabled = TRUE
+        ),
+      )
+    )
+  }
+
+  # initial project data is NA only
+  project_data <- shiny::reactiveValues(
+    df = data.frame(NA, NA, NA, NA, NA) |>
+      setNames(db_column_names("core", "projects"))
+    )
+
+  # if information is downloaded from database, input fields are updated accordingly
+  shiny::observe({
+    project_data$df <- db_download_with_filter(selection = db_column_names("core", "projects"),
+                            schema = "core",
+                            table = "projects",
+                            filter_col = "name",
+                            filter_values = input$project_id_db)
+
+    print(project_data$df)
+
+    shiny::updateTextInput(session,
+                           inputId = "project_id_name",
+                           value = project_data$df$name)
+
+    shiny::updateTextInput(session,
+                           inputId = "project_id_name_short",
+                           value = project_data$df$name_short)
+
+    shiny::updateTextInput(session,
+                           inputId = "project_id_contact",
+                           value = project_data$df$contact)
+
+    shiny::updateTextInput(session,
+                           inputId = "project_id_description",
+                           value = project_data$df$description)
+
+  }) %>%
+    bindEvent(input$download_project_db)
+
+  # if a new project needs to be created, the project_data needs to be reset to NA only
+  shiny::observeEvent(input$download_project_new, {
+    project_data$df = data.frame(NA, NA, NA, NA, NA) |>
+      setNames(db_column_names("core", "projects"))
+  })
+
+  # only if all text inputs have at least 3 characters, the database input can be updated
+  #TODO:maybe increase
+  shiny::observe({
+    print("toggle action button")
+
+    inputs <- c(input$project_id_name,
+    input$project_id_name_short,
+    input$project_id_contact,
+    input$project_id_description)
+
+    print(stringr::str_length(inputs))
+
+    if(min(stringr::str_length(inputs)) > 2){
+      shinyBS::updateButton(
+        session,
+        inputId = "project_id_accept",
+        disabled = FALSE
+      )
+    }
+  })
+
+  # once all information is entered, it is either uploaded (appended) or updated
   shiny::observeEvent(input$project_id_accept, {
 
-    print(md_out_updated$df)
-    nrow(md_out_updated$df)
-    md_out_updated$df$project_id <- input$project_id_text
+    project_data$df[, db_column_names("core", "projects")[-1]] <- c(
+      input$project_id_name,
+      input$project_id_name_short,
+      input$project_id_contact,
+      input$project_id_description)
 
+   if(is.na(project_data$df$project_id)){
+     db_upload(upload_data = project_data$df,
+               schema = "core",
+               table = "projects",
+               idfield = "project_id",
+               update_key = TRUE,
+               append = TRUE,
+               row.names = FALSE,
+               overwrite = FALSE)
+
+     project_data$df <- db_download_with_filter(selection = db_column_names("core", "projects"),
+                                                schema = "core",
+                                                table = "projects",
+                                                filter_col = "name",
+                                                filter_values = input$project_id_name)
+
+   }else{
+     con <- dbConnection()
+     db_upsert(project_data$df, con, "core", "projects", idfields = "project_id", verbose = TRUE)
+     DBI::dbDisconnect(con)
+   }
+
+    md_out_updated$df$project_id <- project_data$df$project_id
     shiny::removeModal()
+
+    md_out_updated
 
 
     #Upload image classification and show result
-
-    readr::write_csv(md_out_updated$df, here("md_out.csv"))
-
     upload_results <- upload_md_data(md_out_updated$df)
 
     showNotification(
       upload_results$msg
     )
+
+    ##########################################
+    #####  STEP 4 - BLUR IMAGES          #####
+    ##########################################
 
    # blur only images that have been added to the database
     if(!is.null(upload_results$uploaded_data)){
